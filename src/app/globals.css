@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* KehillaNW colour palette */
+  --color-navy-950: #0d1b2a;
+  --color-navy-900: #1a2b4a;
+  --color-navy-800: #1e3560;
+  --color-navy-700: #254070;
+  --color-navy-600: #2e5090;
+  --color-navy-100: #dce8f8;
+  --color-navy-50: #eef4fc;
+
+  --color-gold-600: #a87c0a;
+  --color-gold-500: #c9971a;
+  --color-gold-400: #d4a827;
+  --color-gold-300: #e8c55a;
+  --color-gold-100: #fdf6e0;
+
+  --color-cream: #f8f5ee;
+  --color-cream-dark: #f0ebe0;
+
+  /* Category colours */
+  --color-cat-government: #2563eb;
+  --color-cat-support: #16a34a;
+  --color-cat-shopping: #9333ea;
+  --color-cat-education: #ea580c;
+  --color-cat-community: #0d9488;
+  --color-cat-entertainment: #e11d48;
+  --color-cat-recipes: #d97706;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Georgia", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: theme(--color-cream);
+  --foreground: #1a1a2e;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Prose styles for notice content */
+.notice-content h2 { @apply text-2xl font-bold text-navy-900 mt-6 mb-3; }
+.notice-content h3 { @apply text-xl font-bold text-navy-900 mt-5 mb-2; }
+.notice-content h4 { @apply text-lg font-semibold text-navy-800 mt-4 mb-2; }
+.notice-content p  { @apply mb-4 leading-relaxed; }
+.notice-content ul { @apply list-disc pl-6 mb-4 space-y-1; }
+.notice-content ol { @apply list-decimal pl-6 mb-4 space-y-1; }
+.notice-content a  { @apply text-navy-700 underline hover:text-gold-600; }
+.notice-content hr { @apply border-gold-300 my-4; }
+.notice-content strong { @apply font-bold; }
+.notice-content em     { @apply italic; }
+.notice-content img    { @apply rounded-lg w-full my-4; }
