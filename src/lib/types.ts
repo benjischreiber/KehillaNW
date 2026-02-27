@@ -68,6 +68,17 @@ export const categoryColourMap: Record<string, string> = {
   navy: "bg-navy-700",
 };
 
+export const categoryColourTintMap: Record<string, string> = {
+  blue: "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100",
+  green: "bg-green-50 text-green-700 border-green-200 hover:bg-green-100",
+  purple: "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100",
+  orange: "bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100",
+  teal: "bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100",
+  rose: "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100",
+  amber: "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100",
+  navy: "bg-navy-50 text-navy-700 border-navy-200 hover:bg-navy-100",
+};
+
 export const categoryColourTextMap: Record<string, string> = {
   blue: "text-blue-700 bg-blue-50",
   green: "text-green-700 bg-green-50",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Category, categoryColourMap } from "@/lib/types";
+import { Category, categoryColourMap, categoryColourTintMap } from "@/lib/types";
 import { Grid3X3, Building2, Heart, ShoppingBag, GraduationCap, Users, Sparkles, ChefHat } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -20,7 +20,7 @@ interface CategoryNavProps {
 }
 
 const defaultCategories: Category[] = [
-  { _id: "1", title: "Government", slug: { current: "government" }, colour: "blue", showInMainNav: true },
+  { _id: "1", title: "Useful Info", slug: { current: "useful-info" }, colour: "blue", showInMainNav: true },
   { _id: "2", title: "Support", slug: { current: "support" }, colour: "green", showInMainNav: true },
   { _id: "3", title: "Shopping", slug: { current: "shopping" }, colour: "purple", showInMainNav: true },
   { _id: "4", title: "Education", slug: { current: "education" }, colour: "orange", showInMainNav: true },
@@ -52,15 +52,16 @@ export default function CategoryNav({ categories }: CategoryNavProps) {
           </Link>
           {navCategories.map((cat) => {
             const isActive = activeCategory === cat.slug.current;
-            const colourClass = cat.colour ? categoryColourMap[cat.colour] : "bg-navy-700";
+            const solidClass = cat.colour ? categoryColourMap[cat.colour] : "bg-navy-700";
+            const tintClass = cat.colour ? categoryColourTintMap[cat.colour] : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
             return (
               <Link
                 key={cat._id}
                 href={`/category/${cat.slug.current}`}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all shrink-0 border-2 ${
                   isActive
-                    ? `${colourClass} text-white border-transparent`
-                    : "text-gray-700 border-gray-200 hover:border-gray-400"
+                    ? `${solidClass} text-white border-transparent`
+                    : tintClass
                 }`}
               >
                 {iconMap[cat.slug.current] || null}
