@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
-import { Calendar, ExternalLink, ArrowLeft, Tag } from "lucide-react";
+import { Calendar, ExternalLink, ArrowLeft, Tag, FileText } from "lucide-react";
 
 export const revalidate = 300;
 
@@ -95,17 +95,32 @@ export default async function NoticePage({ params }: Props) {
             </p>
           )}
 
-          {/* External link button */}
-          {notice.externalLink && (
-            <a
-              href={notice.externalLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-navy-900 text-white px-6 py-3 rounded-full font-semibold hover:bg-navy-700 transition-colors mb-8"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Visit for more info
-            </a>
+          {/* CTA buttons */}
+          {(notice.pdfUrl || notice.externalLink) && (
+            <div className="flex flex-wrap gap-3 mb-8">
+              {notice.pdfUrl && (
+                <a
+                  href={notice.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gold-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-gold-600 transition-colors"
+                >
+                  <FileText className="h-4 w-4" />
+                  View PDF
+                </a>
+              )}
+              {notice.externalLink && (
+                <a
+                  href={notice.externalLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-navy-900 text-white px-6 py-3 rounded-full font-semibold hover:bg-navy-700 transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Visit for more info
+                </a>
+              )}
+            </div>
           )}
 
           {/* Rich text content */}

@@ -107,6 +107,13 @@ export const noticeSchema = defineType({
       options: { hotspot: true },
     }),
     defineField({
+      name: "pdfFile",
+      title: "PDF Attachment",
+      type: "file",
+      options: { accept: ".pdf" },
+      description: "Upload a PDF flyer or document for this notice",
+    }),
+    defineField({
       name: "externalLink",
       title: "External Link",
       type: "url",

@@ -48,6 +48,7 @@ export const noticeBySlug = groq`
   *[_type == "notice" && slug.current == $slug][0]{
     ${noticeFields}
     content,
+    "pdfUrl": pdfFile.asset->url,
   }
 `;
 

@@ -8,6 +8,7 @@ export interface Notice {
   featured?: boolean;
   isEvent?: boolean;
   externalLink?: string;
+  pdfUrl?: string;
   image?: SanityImage;
   categoryTitle?: string;
   categorySlug?: string;
