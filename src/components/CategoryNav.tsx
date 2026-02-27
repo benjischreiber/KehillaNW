@@ -36,15 +36,15 @@ export default function CategoryNav({ categories }: CategoryNavProps) {
   const navCategories = categories && categories.length > 0 ? categories : defaultCategories;
 
   return (
-    <nav className="bg-gold-500 shadow-sm sticky top-[73px] z-40">
+    <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-[57px] z-40">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2">
           <Link
             href="/notices"
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors shrink-0 ${
-              activeCategory === "all" || pathname === "/notices"
-                ? "bg-navy-900 text-white"
-                : "text-navy-900 hover:bg-navy-900/10"
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all shrink-0 border-2 ${
+              activeCategory === "all" || (pathname === "/" && !searchParams.get("category"))
+                ? "bg-navy-900 text-white border-navy-900"
+                : "text-navy-700 border-navy-200 hover:border-navy-400"
             }`}
           >
             <Grid3X3 className="h-4 w-4" />
@@ -57,10 +57,10 @@ export default function CategoryNav({ categories }: CategoryNavProps) {
               <Link
                 key={cat._id}
                 href={`/category/${cat.slug.current}`}
-                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors shrink-0 ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all shrink-0 border-2 ${
                   isActive
-                    ? `${colourClass} text-white`
-                    : "text-navy-900 hover:bg-navy-900/10"
+                    ? `${colourClass} text-white border-transparent`
+                    : "text-gray-700 border-gray-200 hover:border-gray-400"
                 }`}
               >
                 {iconMap[cat.slug.current] || null}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Search, Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -35,73 +36,63 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
 
   return (
     <header className="bg-navy-900 text-white sticky top-0 z-50 shadow-md">
-      {/* Top bar */}
-      <div className="border-b border-navy-700">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4 flex-wrap">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="bg-gold-400 text-navy-900 font-bold text-sm px-2 py-1 rounded">
-              KNW
-            </div>
-            <div>
-              <div className="font-bold text-lg leading-tight">KehillaNW</div>
-              <div className="text-xs text-navy-200 leading-tight">Home of the NW London Kehilla</div>
-            </div>
-          </Link>
+      <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-4">
+        {/* Logo */}
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/logo.png"
+            alt="KehillaNW — Home of the NW London Kehilla"
+            width={200}
+            height={44}
+            className="h-10 w-auto"
+            priority
+          />
+        </Link>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-md hidden sm:flex">
-            <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
-              <input
-                type="text"
-                placeholder="Search notices…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-4 py-2 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none focus:bg-navy-700"
-              />
-              <button
-                type="submit"
-                className="bg-gold-500 hover:bg-gold-400 px-4 py-2 transition-colors"
-                aria-label="Search"
-              >
-                <Search className="h-4 w-4 text-navy-900" />
-              </button>
-            </div>
-          </form>
-
-          {/* Right: date + top nav */}
-          <div className="flex flex-col items-end gap-1 shrink-0">
-            {hebrewDate && (
-              <span className="text-xs text-gold-300">{hebrewDate}</span>
-            )}
-            <nav className="hidden md:flex items-center gap-4 text-sm">
-              {navLinks.map((cat) => (
-                <Link
-                  key={cat.title}
-                  href={`/category/${cat.slug.current}`}
-                  className="text-gold-300 hover:text-gold-100 transition-colors font-medium"
-                >
-                  {cat.title}
-                </Link>
-              ))}
-              <Link
-                href="/about"
-                className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1 rounded-full text-xs transition-colors"
-              >
-                About
-              </Link>
-            </nav>
+        {/* Search */}
+        <form onSubmit={handleSearch} className="flex-1 max-w-lg hidden sm:flex">
+          <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
+            <input
+              type="text"
+              placeholder="Search notices…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 px-4 py-2 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none focus:bg-navy-700"
+            />
+            <button
+              type="submit"
+              className="bg-gold-500 hover:bg-gold-400 px-4 py-2 transition-colors"
+              aria-label="Search"
+            >
+              <Search className="h-4 w-4 text-navy-900" />
+            </button>
           </div>
+        </form>
 
-          {/* Mobile menu toggle */}
-          <button
-            className="md:hidden ml-auto"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+        {/* Right: About + Submit */}
+        <div className="hidden md:flex items-center gap-3 ml-auto shrink-0">
+          <Link
+            href="/submit"
+            className="text-gold-300 hover:text-gold-100 text-sm font-medium transition-colors"
           >
-            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+            Submit a notice
+          </Link>
+          <Link
+            href="/about"
+            className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1.5 rounded-full text-sm transition-colors"
+          >
+            About
+          </Link>
         </div>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="md:hidden ml-auto"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
       </div>
 
       {/* Mobile menu */}
@@ -120,23 +111,8 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
             </button>
           </form>
           <nav className="flex flex-wrap gap-3">
-            {navLinks.map((cat) => (
-              <Link
-                key={cat.title}
-                href={`/category/${cat.slug.current}`}
-                className="text-gold-300 hover:text-white text-sm font-medium"
-                onClick={() => setMenuOpen(false)}
-              >
-                {cat.title}
-              </Link>
-            ))}
-            <Link
-              href="/about"
-              className="text-gold-300 hover:text-white text-sm font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              About
-            </Link>
+            <Link href="/submit" className="text-gold-300 hover:text-white text-sm font-medium" onClick={() => setMenuOpen(false)}>Submit a notice</Link>
+            <Link href="/about" className="text-gold-300 hover:text-white text-sm font-medium" onClick={() => setMenuOpen(false)}>About</Link>
           </nav>
         </div>
       )}

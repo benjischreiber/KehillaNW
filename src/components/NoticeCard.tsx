@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Notice, categoryColourTextMap } from "@/lib/types";
+import { Notice, categoryColourMap, categoryColourTextMap } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
 import { formatDate } from "@/lib/utils";
 
@@ -20,6 +20,11 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
       ? categoryColourTextMap[notice.categoryColour]
       : "text-navy-700 bg-navy-50";
 
+  const placeholderBg =
+    notice.categoryColour && categoryColourMap[notice.categoryColour]
+      ? categoryColourMap[notice.categoryColour]
+      : "bg-navy-700";
+
   if (size === "lg") {
     return (
       <Link
@@ -28,27 +33,26 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         rel={isExternal ? "noopener noreferrer" : undefined}
         className="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100"
       >
-        {notice.image && (
-          <div className="relative h-56 w-full overflow-hidden">
+        <div className="relative h-48 w-full overflow-hidden">
+          {notice.image ? (
             <Image
               src={urlFor(notice.image).width(600).height(400).url()}
               alt={notice.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
-            {notice.categoryTitle && (
-              <span className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded-full ${badgeClass}`}>
-                {notice.categoryTitle}
-              </span>
-            )}
-          </div>
-        )}
-        <div className="p-5">
-          {!notice.image && notice.categoryTitle && (
-            <span className={`text-xs font-bold px-2 py-1 rounded-full ${badgeClass} mb-3 inline-block`}>
+          ) : (
+            <div className={`h-full w-full ${placeholderBg} flex items-center justify-center opacity-90`}>
+              <span className="text-white text-4xl font-bold opacity-30 select-none tracking-widest">KNW</span>
+            </div>
+          )}
+          {notice.categoryTitle && (
+            <span className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded-full ${badgeClass} shadow-sm`}>
               {notice.categoryTitle}
             </span>
           )}
+        </div>
+        <div className="p-5">
           <h3 className="font-bold text-navy-900 text-lg leading-snug group-hover:text-gold-600 transition-colors mb-2">
             {notice.title}
           </h3>
