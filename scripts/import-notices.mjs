@@ -18,7 +18,7 @@ const categoryMap = {
   "Kashrus": { title: "Kashrus", slug: "kashrus", colour: "orange", parent: "community" },
   "Parenting": { title: "Parenting", slug: "parenting", colour: "teal", parent: "community" },
   "Wellbeing": { title: "Wellbeing", slug: "wellbeing", colour: "green", parent: "support" },
-  "Government": { title: "Government", slug: "government", colour: "blue" },
+  "Government": { title: "Useful Info", slug: "useful-info", colour: "blue" },
   "Support": { title: "Support", slug: "support", colour: "green" },
   "Shopping": { title: "Shopping", slug: "shopping", colour: "purple" },
   "Education": { title: "Education", slug: "education", colour: "orange" },
