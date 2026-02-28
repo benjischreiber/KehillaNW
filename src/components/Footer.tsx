@@ -48,7 +48,7 @@ export default function Footer() {
             <h3 className="font-bold text-gold-400 mb-3 text-sm uppercase tracking-wide">Categories</h3>
             <ul className="space-y-2 text-sm text-navy-200">
               {[
-                { label: "Government", href: "/category/government" },
+                { label: "Useful Info", href: "/category/useful-info" },
                 { label: "Support", href: "/category/support" },
                 { label: "Shopping", href: "/category/shopping" },
                 { label: "Education", href: "/category/education" },

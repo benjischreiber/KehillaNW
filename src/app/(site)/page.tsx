@@ -33,6 +33,42 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Hero banner */}
+      <div className="bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 text-white py-8 px-4 relative overflow-hidden">
+        {/* decorative gold blobs */}
+        <div className="absolute -top-10 -right-10 w-64 h-64 bg-gold-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-20 w-48 h-48 bg-gold-400 rounded-full opacity-5 blur-2xl pointer-events-none" />
+        <div className="max-w-7xl mx-auto relative">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">NW London Community</p>
+              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
+                What&apos;s happening in the <span className="text-gold-400">Kehilla</span>
+              </h1>
+              <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
+            </div>
+            <div className="flex flex-wrap gap-2 sm:justify-end">
+              {[
+                { label: "Useful Info", slug: "useful-info", bg: "bg-blue-600" },
+                { label: "Support", slug: "support", bg: "bg-green-600" },
+                { label: "Shopping", slug: "shopping", bg: "bg-purple-600" },
+                { label: "Education", slug: "education", bg: "bg-orange-500" },
+                { label: "Community", slug: "community", bg: "bg-teal-600" },
+                { label: "Entertainment", slug: "entertainment", bg: "bg-rose-600" },
+              ].map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/category/${cat.slug}`}
+                  className={`${cat.bg} text-white text-xs font-bold px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap`}
+                >
+                  {cat.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Upcoming events ticker */}
       {events.length > 0 && <UpcomingTicker events={events} />}
 

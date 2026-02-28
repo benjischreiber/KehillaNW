@@ -35,7 +35,7 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
   const navLinks = topNavCategories.length > 0 ? topNavCategories : defaultTopNav;
 
   return (
-    <header className="bg-navy-900 text-white sticky top-0 z-50 shadow-md">
+    <header className="bg-gradient-to-r from-navy-950 to-navy-800 text-white sticky top-0 z-50 shadow-lg border-b-2 border-gold-500">
       <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-4">
         {/* Logo */}
         <Link href="/" className="shrink-0">
@@ -44,7 +44,7 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
             alt="KehillaNW — Home of the NW London Kehilla"
             width={200}
             height={44}
-            className="h-10 w-auto"
+            className="h-10 w-auto brightness-0 invert"
             priority
           />
         </Link>

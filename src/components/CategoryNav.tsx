@@ -6,6 +6,7 @@ import { Category, categoryColourMap, categoryColourTintMap } from "@/lib/types"
 import { Grid3X3, Building2, Heart, ShoppingBag, GraduationCap, Users, Sparkles, ChefHat } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
+  "useful-info": <Building2 className="h-4 w-4" />,
   government: <Building2 className="h-4 w-4" />,
   support: <Heart className="h-4 w-4" />,
   shopping: <ShoppingBag className="h-4 w-4" />,
