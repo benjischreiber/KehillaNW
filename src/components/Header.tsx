@@ -42,14 +42,14 @@ export default function Header() {
           {/* Logo — row-span-2 so it straddles both rows */}
           <Link
             href="/"
-            className="row-span-2 self-center bg-white rounded-xl px-3 py-2 my-2 hover:opacity-90 transition-opacity"
+            className="row-span-2 self-center bg-white rounded-xl px-2 py-1.5 my-1.5 hover:opacity-90 transition-opacity"
           >
             <Image
-              src="/logosmall.png"
+              src="/logo.png"
               alt="KehillaNW.org"
-              width={260}
-              height={60}
-              className="h-14 w-auto"
+              width={300}
+              height={240}
+              className="h-20 w-auto"
               priority
             />
           </Link>
@@ -115,7 +115,7 @@ export default function Header() {
         {/* ── Mobile layout (single row + hamburger) ── */}
         <div className="md:hidden flex items-center gap-3 py-2">
           <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1 hover:opacity-90 transition-opacity">
-            <Image src="/logosmall.png" alt="KehillaNW.org" width={160} height={38} className="h-9 w-auto" priority />
+            <Image src="/logo.png" alt="KehillaNW.org" width={160} height={128} className="h-11 w-auto" priority />
           </Link>
           <form onSubmit={handleSearch} className="flex-1">
             <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
