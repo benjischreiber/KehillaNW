@@ -40,7 +40,7 @@ export default function Header() {
   return (
     <header
       className="text-white border-b-4 border-gold-500 shadow-xl relative overflow-hidden"
-      style={{ backgroundImage: "url('/sky.svg')", backgroundSize: "cover", backgroundPosition: "center top" }}
+      style={{ backgroundImage: "url('/cloud.jpg')", backgroundSize: "cover", backgroundPosition: "center center" }}
     >
 
       {/* Dark overlay so white text stays readable against sky */}
