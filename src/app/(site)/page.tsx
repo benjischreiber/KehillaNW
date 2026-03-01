@@ -39,19 +39,31 @@ export default async function HomePage() {
         <div className="absolute -top-10 -right-10 w-64 h-64 bg-gold-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-20 w-48 h-48 bg-gold-400 rounded-full opacity-5 blur-2xl pointer-events-none" />
         <div className="max-w-7xl mx-auto relative">
-          <div>
-            <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">NW London Community</p>
-            <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
-              What&apos;s happening in the <span className="text-gold-400">Kehilla</span>
-            </h1>
-            <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
-            <div className="mt-4">
-              <Link
-                href="/submit"
-                className="inline-block bg-gold-500 text-navy-900 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors whitespace-nowrap"
-              >
-                Submit a Notice
-              </Link>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            <div className="flex-1">
+              <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">NW London Community</p>
+              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
+                What&apos;s happening in the <span className="text-gold-400">Kehilla</span>
+              </h1>
+              <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
+              <div className="mt-4">
+                <Link
+                  href="/submit"
+                  className="inline-block bg-gold-500 text-navy-900 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors whitespace-nowrap"
+                >
+                  Submit a Notice
+                </Link>
+              </div>
+            </div>
+            <div className="hidden sm:flex justify-end shrink-0">
+              <Image
+                src="/logo.png"
+                alt="KehillaNW — Connecting Our Community"
+                width={260}
+                height={200}
+                className="h-40 w-auto rounded-2xl shadow-2xl"
+                priority
+              />
             </div>
           </div>
         </div>
@@ -60,9 +72,24 @@ export default async function HomePage() {
       {/* Upcoming events ticker */}
       {events.length > 0 && <UpcomingTicker events={events} />}
 
+      {/* ── Street wallpaper section ── */}
+      <div
+        className="relative"
+        style={{
+          backgroundImage: "url('/street.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center 30%",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        {/* Warm cream overlay so cards pop without losing the street scene */}
+        <div className="absolute inset-0 bg-cream/70 pointer-events-none" />
+
+        <div className="relative">
+
       {/* Banner ads */}
       {banners.length > 0 && (
-        <div className="bg-white border-b border-gray-100 py-4">
+        <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100 py-4">
           <div className="max-w-7xl mx-auto px-4">
             {banners.map((banner) => (
               <a
@@ -202,6 +229,9 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
+
+        </div>{/* /relative inner */}
+      </div>{/* /street wallpaper */}
     </>
   );
 }
