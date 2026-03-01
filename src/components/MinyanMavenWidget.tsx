@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const CITY_ID = "645361a5977089201005233e"; // Golders Green/Hendon
-
 type MinyanEntry = {
   time: string;
   id: string;
@@ -53,13 +51,9 @@ export default function MinyanMavenWidget() {
 
   useEffect(() => {
     const date = todayDate();
-    const base = `date=${date}&city=${CITY_ID}`;
-    Promise.all([
-      fetch(`https://www.minyanmaven.com/api/shacharith?${base}`).then<ServiceData>((r) => r.json()),
-      fetch(`https://www.minyanmaven.com/api/mincha?${base}`).then<ServiceData>((r) => r.json()),
-      fetch(`https://www.minyanmaven.com/api/maariv?${base}`).then<ServiceData>((r) => r.json()),
-    ])
-      .then(([shacharith, mincha, maariv]) => {
+    fetch(`/api/minyanim?date=${date}`)
+      .then<{ shacharith: ServiceData; mincha: ServiceData; maariv: ServiceData }>((r) => r.json())
+      .then(({ shacharith, mincha, maariv }) => {
         setLists({
           shacharith: shacharith.list ?? {},
           mincha: mincha.list ?? {},
