@@ -12,7 +12,7 @@ export default function Footer() {
               <span className="font-bold text-lg">KehillaNW.org</span>
             </div>
             <p className="text-navy-200 text-sm leading-relaxed mb-4">
-              Home of the NW London Kehilla. This website was set up by members of kehillos across
+              Home of the NW London Kehilla. This website was set up by members of the kehilla across
               Golders Green and Hendon to share information widely and in a timely manner.
             </p>
             <p className="text-xs text-navy-300">

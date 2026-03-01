@@ -25,7 +25,7 @@ export const featuredNoticesQuery = groq`
 
 export const recentNoticesQuery = groq`
   *[_type == "notice" && (!defined(endDate) || endDate > now())]
-  | order(publishDate desc)[0..23]{${noticeFields}}
+  | order(publishDate desc)[0..47]{${noticeFields}}
 `;
 
 export const upcomingEventsQuery = groq`
@@ -46,7 +46,7 @@ export const noticesByCategory = groq`
     secondaryCategory->slug.current == $slug ||
     secondaryCategory->parent->slug.current == $slug
   ) && (!defined(endDate) || endDate > now())]
-  | order(publishDate desc)[0..199]{${noticeFields}}
+  | order(publishDate desc)[0..599]{${noticeFields}}
 `;
 
 export const noticeBySlug = groq`
@@ -59,7 +59,7 @@ export const noticeBySlug = groq`
 
 export const allNoticesQuery = groq`
   *[_type == "notice" && (!defined(endDate) || endDate > now())]
-  | order(publishDate desc)[0..47]{${noticeFields}}
+  | order(publishDate desc)[0..599]{${noticeFields}}
 `;
 
 export const activeBannersQuery = groq`

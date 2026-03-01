@@ -26,9 +26,11 @@ export default function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const activeCategory =
-    searchParams.get("category") ||
-    (pathname.startsWith("/category/") ? pathname.split("/category/")[1] : "all");
+  const isHomePage = pathname === "/";
+  const activeCategory = isHomePage
+    ? "none"
+    : searchParams.get("category") ||
+      (pathname.startsWith("/category/") ? pathname.split("/category/")[1] : "all");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,70 +43,59 @@ export default function Header() {
     <header className="bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 text-white border-b-4 border-gold-500 shadow-xl">
 
       {/* ── Desktop ── */}
-      <div className="hidden md:block max-w-7xl mx-auto px-6 py-5">
-        <div className="flex items-start gap-8">
+      <div className="hidden md:flex items-stretch gap-6 max-w-7xl mx-auto px-6 py-5">
 
-          {/* Left: search row + brand headline + category pills */}
-          <div className="flex-1 min-w-0">
+        {/* Left column: utility row + brand + pills+search */}
+        <div className="flex-1 min-w-0 flex flex-col">
 
-            {/* Search + utility links */}
-            <div className="flex items-center gap-3 mb-5">
-              <form onSubmit={handleSearch} className="flex flex-1 max-w-md">
-                <div className="flex w-full rounded-lg overflow-hidden border border-white/20">
-                  <input
-                    type="text"
-                    placeholder="Search notices…"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 px-4 py-2 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-gold-500 hover:bg-gold-400 px-3 py-2 transition-colors"
-                    aria-label="Search"
-                  >
-                    <Search className="h-4 w-4 text-navy-900" />
-                  </button>
-                </div>
-              </form>
-              <Link
-                href="/submit"
-                className="text-gold-300 hover:text-gold-100 text-sm font-semibold transition-colors whitespace-nowrap"
-              >
-                Submit a notice
-              </Link>
-              <Link
-                href="/about"
-                className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1.5 rounded-full text-sm transition-colors whitespace-nowrap"
-              >
-                About
-              </Link>
-            </div>
+          {/* Submit + About + Home — top right of left column */}
+          <div className="flex items-center justify-end gap-3 mb-4">
+            <Link
+              href="/"
+              className="text-white/70 hover:text-white text-sm font-semibold transition-colors whitespace-nowrap"
+            >
+              Home
+            </Link>
+            <Link
+              href="/submit"
+              className="text-gold-300 hover:text-gold-100 text-sm font-semibold transition-colors whitespace-nowrap"
+            >
+              Submit a notice
+            </Link>
+            <Link
+              href="/about"
+              className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1.5 rounded-full text-sm transition-colors whitespace-nowrap"
+            >
+              About
+            </Link>
+          </div>
 
-            {/* Brand */}
-            <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">
-              NW London Community
-            </p>
-            <p className="text-2xl sm:text-3xl font-bold leading-tight">
-              What&apos;s happening in the{" "}
-              <span className="text-gold-400">Kehilla</span>
-            </p>
-            <p className="text-navy-200 text-sm mt-1 mb-4">
-              Notices, events &amp; useful info — updated daily
-            </p>
+          {/* Brand headline */}
+          <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">
+            NW London Community
+          </p>
+          <p className="text-2xl sm:text-3xl font-bold leading-tight mb-1">
+            What&apos;s happening in the{" "}
+            <span className="text-gold-400">Kehilla</span>
+          </p>
+          <p className="text-navy-200 text-sm mb-4">
+            Notices, events &amp; useful info — updated daily
+          </p>
 
-            {/* Category pills — replacing the old Submit button */}
-            <div className="flex flex-wrap gap-2">
+          {/* Category pills + search on the same row */}
+          <div className="flex items-center gap-2 mt-auto">
+            {/* Pills — scrollable */}
+            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide flex-1 min-w-0">
               <Link
                 href="/notices"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
                   activeCategory === "all"
                     ? "bg-white text-navy-900 border-white shadow-sm"
                     : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
                 }`}
               >
                 <Grid3X3 className="h-3.5 w-3.5" />
-                All Posts
+                All Notices
               </Link>
               {NAV_CATEGORIES.map((cat) => {
                 const isActive = activeCategory === cat.slug;
@@ -113,7 +104,7 @@ export default function Header() {
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
                       isActive
                         ? `${solidClass} text-white border-transparent shadow-sm`
                         : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
@@ -125,20 +116,44 @@ export default function Header() {
                 );
               })}
             </div>
-          </div>
 
-          {/* Right: big logo */}
-          <Link href="/" className="shrink-0 hover:opacity-90 transition-opacity">
-            <Image
-              src="/logo.png"
-              alt="KehillaNW — Connecting Our Community"
-              width={300}
-              height={240}
-              className="h-48 w-auto rounded-2xl shadow-2xl"
-              priority
-            />
-          </Link>
+            {/* Search — right of pills */}
+            <form onSubmit={handleSearch} className="shrink-0">
+              <div className="flex rounded-lg overflow-hidden border border-white/20">
+                <input
+                  type="text"
+                  placeholder="Search notices…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-44 px-3 py-1.5 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15"
+                />
+                <button
+                  type="submit"
+                  className="bg-gold-500 hover:bg-gold-400 px-2.5 py-1.5 transition-colors"
+                  aria-label="Search"
+                >
+                  <Search className="h-4 w-4 text-navy-900" />
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+
+        {/* Right: logo fills full header height */}
+        <Link
+          href="/"
+          className="shrink-0 self-stretch hover:opacity-90 transition-opacity flex items-center"
+        >
+          <Image
+            src="/logo.png"
+            alt="KehillaNW — Connecting Our Community"
+            width={300}
+            height={240}
+            className="rounded-2xl shadow-2xl w-auto"
+            style={{ height: "100%", maxHeight: "100%", width: "auto" }}
+            priority
+          />
+        </Link>
       </div>
 
       {/* ── Mobile ── */}
@@ -177,7 +192,7 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile category pills */}
+        {/* Mobile pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
           <Link
             href="/notices"
@@ -187,7 +202,7 @@ export default function Header() {
                 : "text-white/80 border-white/20 bg-white/8"
             }`}
           >
-            <Grid3X3 className="h-3 w-3" />All
+            <Grid3X3 className="h-3 w-3" />All Notices
           </Link>
           {NAV_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.slug;
@@ -212,6 +227,9 @@ export default function Header() {
       {/* Mobile expanded menu */}
       {menuOpen && (
         <div className="md:hidden bg-navy-900 px-4 py-3 border-t border-white/10 flex gap-4">
+          <Link href="/" className="text-white/70 text-sm font-medium" onClick={() => setMenuOpen(false)}>
+            Home
+          </Link>
           <Link href="/submit" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>
             Submit a notice
           </Link>

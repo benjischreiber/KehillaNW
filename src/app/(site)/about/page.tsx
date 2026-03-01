@@ -11,7 +11,7 @@ export default function AboutPage() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5 text-gray-700 leading-relaxed">
         <p>
-          <strong className="text-navy-900">KehillaNW.org</strong> is a community website set up by members of kehillos across
+          <strong className="text-navy-900">KehillaNW.org</strong> is a community website set up by members of the kehilla across
           Golders Green and Hendon who sought to share information widely and in a timely manner.
         </p>
         <p>
