@@ -26,11 +26,14 @@ function todayDate(): string {
   return `${dd}-${mm}-${d.getFullYear()}`;
 }
 
-function currentService(): ServiceKey {
-  const h = new Date().getHours(); // browser's local time
-  if (h < 11) return "shacharith";
-  if (h < 19) return "mincha";
-  return "maariv";
+function serviceFromTimes(duskIso: string | null, sunriseIso: string | null): ServiceKey {
+  const now = Date.now();
+  // After nightfall → Maariv
+  if (duskIso && now >= new Date(duskIso).getTime()) return "maariv";
+  // Before ~end of Shacharit window (11am, or before sunrise) → Shacharit
+  if (sunriseIso && now < new Date(sunriseIso).getTime() + 90 * 60 * 1000) return "shacharith";
+  if (new Date().getHours() < 11) return "shacharith";
+  return "mincha";
 }
 
 const TABS: { key: ServiceKey; en: string; he: string }[] = [
@@ -52,22 +55,32 @@ export default function MinyanMavenWidget() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    setActive(currentService()); // set correct tab in browser
     const date = todayDate();
-    fetch(`/api/minyanim?date=${date}`)
-      .then<{ shacharith: ServiceData; mincha: ServiceData; maariv: ServiceData }>((r) => r.json())
-      .then(({ shacharith, mincha, maariv }) => {
-        setLists({
-          shacharith: shacharith.list ?? {},
-          mincha: mincha.list ?? {},
-          maariv: maariv.list ?? {},
-        });
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
+
+    // Fetch zmanim (for shkia/dusk) and minyan times in parallel
+    Promise.all([
+      fetch(
+        `https://www.hebcal.com/zmanim?cfg=json&latitude=51.5726&longitude=-0.1943&tzid=Europe%2FLondon`
+      ).then((r) => r.json()).catch(() => null),
+      fetch(`/api/minyanim?date=${date}`)
+        .then<{ shacharith: ServiceData; mincha: ServiceData; maariv: ServiceData }>((r) => r.json()),
+    ]).then(([zmanim, minyanim]) => {
+      const dusk    = zmanim?.times?.dusk    ?? null;
+      const sunrise = zmanim?.times?.sunrise ?? null;
+      setActive(serviceFromTimes(dusk, sunrise));
+
+      setLists({
+        shacharith: minyanim.shacharith.list ?? {},
+        mincha:     minyanim.mincha.list     ?? {},
+        maariv:     minyanim.maariv.list     ?? {},
       });
+      setLoading(false);
+    }).catch(() => {
+      // Fall back to fixed-hour logic if either fetch fails
+      setActive(new Date().getHours() < 11 ? "shacharith" : new Date().getHours() < 17 ? "mincha" : "maariv");
+      setError(true);
+      setLoading(false);
+    });
   }, []);
 
   const current = lists[active] ?? {};
