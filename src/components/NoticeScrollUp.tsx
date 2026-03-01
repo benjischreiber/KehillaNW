@@ -16,7 +16,7 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
           100% { transform: translateY(-50%); }
         }
         .scroll-up-track {
-          animation: scroll-up ${duration}s linear infinite;
+          animation: scroll-up ${duration}s linear 3s infinite;
         }
         .scroll-up-track:hover {
           animation-play-state: paused;
