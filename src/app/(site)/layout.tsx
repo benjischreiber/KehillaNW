@@ -8,17 +8,17 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <Suspense fallback={null}>
         <Header />
       </Suspense>
-      {/* Street wallpaper behind all page content */}
+      {/* Sky background behind all page content */}
       <main
         className="flex-1 relative"
         style={{
-          backgroundImage: "url('/street.png')",
+          backgroundImage: "url('/sky.svg')",
           backgroundSize: "cover",
-          backgroundPosition: "center 30%",
+          backgroundPosition: "center top",
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="absolute inset-0 bg-white/55 pointer-events-none" />
+        <div className="absolute inset-0 bg-white/20 pointer-events-none" />
         <div className="relative">
           {children}
         </div>

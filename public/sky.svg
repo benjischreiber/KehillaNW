@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5B9EC9"/>
+      <stop offset="55%" stop-color="#9CCCE4"/>
+      <stop offset="100%" stop-color="#C8E8F5"/>
+    </linearGradient>
+    <filter id="blur-cloud" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- Sky gradient background -->
+  <rect width="1440" height="900" fill="url(#sky)"/>
+
+  <!-- Cloud A — large, upper-left -->
+  <g opacity="0.82" filter="url(#blur-cloud)">
+    <ellipse cx="210" cy="155" rx="130" ry="52" fill="white"/>
+    <ellipse cx="160" cy="150" rx="80"  ry="46" fill="white"/>
+    <ellipse cx="265" cy="145" rx="90"  ry="40" fill="white"/>
+    <ellipse cx="210" cy="130" rx="70"  ry="38" fill="white"/>
+  </g>
+
+  <!-- Cloud B — medium, upper-right -->
+  <g opacity="0.75" filter="url(#blur-cloud)">
+    <ellipse cx="1180" cy="110" rx="110" ry="44" fill="white"/>
+    <ellipse cx="1130" cy="106" rx="70"  ry="38" fill="white"/>
+    <ellipse cx="1235" cy="100" rx="80"  ry="32" fill="white"/>
+    <ellipse cx="1180" cy="88"  rx="60"  ry="32" fill="white"/>
+  </g>
+
+  <!-- Cloud C — small, centre -->
+  <g opacity="0.60" filter="url(#blur-cloud)">
+    <ellipse cx="720"  cy="220" rx="90"  ry="34" fill="white"/>
+    <ellipse cx="675"  cy="216" rx="55"  ry="28" fill="white"/>
+    <ellipse cx="765"  cy="212" rx="60"  ry="26" fill="white"/>
+  </g>
+
+  <!-- Cloud D — medium, right mid -->
+  <g opacity="0.55" filter="url(#blur-cloud)">
+    <ellipse cx="1340" cy="300" rx="100" ry="40" fill="white"/>
+    <ellipse cx="1295" cy="296" rx="62"  ry="34" fill="white"/>
+    <ellipse cx="1385" cy="292" rx="68"  ry="30" fill="white"/>
+  </g>
+
+  <!-- Cloud E — small, far left mid -->
+  <g opacity="0.50" filter="url(#blur-cloud)">
+    <ellipse cx="60"   cy="290" rx="75"  ry="28" fill="white"/>
+    <ellipse cx="35"   cy="286" rx="44"  ry="22" fill="white"/>
+    <ellipse cx="90"   cy="283" rx="50"  ry="20" fill="white"/>
+  </g>
+
+  <!-- Cloud F — wispy, upper centre-right -->
+  <g opacity="0.40" filter="url(#blur-cloud)">
+    <ellipse cx="950"  cy="80"  rx="85"  ry="22" fill="white"/>
+    <ellipse cx="910"  cy="78"  rx="50"  ry="18" fill="white"/>
+    <ellipse cx="995"  cy="75"  rx="55"  ry="16" fill="white"/>
+  </g>
+</svg>
