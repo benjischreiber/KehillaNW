@@ -27,7 +27,7 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
         className="overflow-hidden relative"
         style={{
           height: "72vh",
-          maskImage: "linear-gradient(to bottom, transparent, black 6%, black 94%, transparent)",
+          maskImage: "linear-gradient(to bottom, black 90%, transparent)",
         }}
       >
         <div className="scroll-up-track grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
