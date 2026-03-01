@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import ZmanimWidget from "@/components/ZmanimWidget";
+import MinyanMavenWidget from "@/components/MinyanMavenWidget";
 
 export const revalidate = 300;
 
@@ -97,7 +98,7 @@ export default async function HomePage() {
         )}
 
         {/* Widget row below notices */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-12">
 
           {/* Mazal Tov */}
           {mazalTov.length > 0 && (
@@ -106,6 +107,9 @@ export default async function HomePage() {
 
           {/* Zmanim */}
           <ZmanimWidget />
+
+          {/* Minyan Times */}
+          <MinyanMavenWidget />
 
           {/* Submit + WhatsApp */}
           <div className="space-y-4">
