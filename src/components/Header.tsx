@@ -39,19 +39,21 @@ export default function Header() {
         {/* ── Grid: logo spans 2 rows, right side has top bar + cat nav ── */}
         <div className="hidden md:grid grid-cols-[auto_1fr] gap-x-5">
 
-          {/* Logo — row-span-2 so it straddles both rows */}
+          {/* Logo — row-span-2, sits at bottom and overflows below header */}
           <Link
             href="/"
-            className="row-span-2 self-center bg-white rounded-xl px-2 py-1.5 my-1.5 hover:opacity-90 transition-opacity"
+            className="row-span-2 flex items-end relative z-10 hover:opacity-90 transition-opacity"
           >
-            <Image
-              src="/logo.png"
-              alt="KehillaNW.org"
-              width={300}
-              height={240}
-              className="h-20 w-auto"
-              priority
-            />
+            <div className="rounded-2xl overflow-hidden shadow-2xl mb-[-36px]">
+              <Image
+                src="/logo.png"
+                alt="KehillaNW.org"
+                width={300}
+                height={280}
+                className="h-32 w-auto block"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Top-right: search + links */}
