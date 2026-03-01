@@ -12,6 +12,7 @@ import MazalTovSection from "@/components/MazalTovSection";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
+import ZmanimWidget from "@/components/ZmanimWidget";
 
 export const revalidate = 300;
 
@@ -104,36 +105,7 @@ export default async function HomePage() {
           )}
 
           {/* Zmanim */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="bg-navy-900 px-5 py-3">
-              <h2 className="font-bold text-white">Zmanim for NW London</h2>
-            </div>
-            <div className="p-5">
-              <a
-                href="https://www.myzmanim.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center mb-3"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://www.myzmanim.com/widget/?lat=51.5832&lng=-0.2005&tzid=Europe/London&zm=m&zs=d&st=1&ft=1&ab=1"
-                  alt="Zmanim for NW London"
-                  className="mx-auto w-full max-w-xs"
-                  width={300}
-                  height={200}
-                />
-              </a>
-              <a
-                href="https://kehillanw.org/Mincha_Maariv_Schedule.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center text-sm text-navy-700 font-semibold hover:text-gold-600 transition-colors"
-              >
-                Download weekly Mincha/Maariv Zmanim sheet
-              </a>
-            </div>
-          </div>
+          <ZmanimWidget />
 
           {/* Submit + WhatsApp */}
           <div className="space-y-4">
