@@ -40,7 +40,7 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
         {/* Logo */}
         <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1 hover:opacity-90 transition-opacity">
           <Image
-            src="/logo.png"
+            src="/logosmall.png"
             alt="KehillaNW — Home of the NW London Kehilla"
             width={200}
             height={44}
