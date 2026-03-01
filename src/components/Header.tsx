@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import {
-  Search, Menu, X, Grid3X3,
+  Search, Menu, X,
   Building2, Heart, ShoppingBag, GraduationCap, Users, Sparkles,
 } from "lucide-react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -26,16 +26,14 @@ export default function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const isHomePage = pathname === "/";
-  const activeCategory = isHomePage
-    ? "none"
-    : searchParams.get("category") ||
-      (pathname.startsWith("/category/") ? pathname.split("/category/")[1] : "all");
+  const activeCategory =
+    searchParams.get("category") ||
+    (pathname.startsWith("/category/") ? pathname.split("/category/")[1] : null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/notices?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -45,30 +43,8 @@ export default function Header() {
       {/* ── Desktop ── */}
       <div className="hidden md:flex items-stretch gap-6 max-w-7xl mx-auto px-6 py-5">
 
-        {/* Left column: utility row + brand + pills+search */}
+        {/* Left column: brand + pills + search */}
         <div className="flex-1 min-w-0 flex flex-col">
-
-          {/* Submit + About + Home — top right of left column */}
-          <div className="flex items-center justify-end gap-3 mb-4">
-            <Link
-              href="/"
-              className="text-white/70 hover:text-white text-sm font-semibold transition-colors whitespace-nowrap"
-            >
-              Home
-            </Link>
-            <Link
-              href="/submit"
-              className="text-gold-300 hover:text-gold-100 text-sm font-semibold transition-colors whitespace-nowrap"
-            >
-              Submit a notice
-            </Link>
-            <Link
-              href="/about"
-              className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1.5 rounded-full text-sm transition-colors whitespace-nowrap"
-            >
-              About
-            </Link>
-          </div>
 
           {/* Brand headline */}
           <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">
@@ -82,61 +58,47 @@ export default function Header() {
             Notices, events &amp; useful info — updated daily
           </p>
 
-          {/* Category pills + search on the same row */}
-          <div className="flex items-center gap-2 mt-auto">
-            {/* Pills — scrollable */}
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide flex-1 min-w-0">
-              <Link
-                href="/notices"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
-                  activeCategory === "all"
-                    ? "bg-white text-navy-900 border-white shadow-sm"
-                    : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
-                }`}
-              >
-                <Grid3X3 className="h-3.5 w-3.5" />
-                All Notices
-              </Link>
-              {NAV_CATEGORIES.map((cat) => {
-                const isActive = activeCategory === cat.slug;
-                const solidClass = categoryColourMap[cat.colour] || "bg-navy-600";
-                return (
-                  <Link
-                    key={cat.slug}
-                    href={`/category/${cat.slug}`}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
-                      isActive
-                        ? `${solidClass} text-white border-transparent shadow-sm`
-                        : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
-                    }`}
-                  >
-                    {cat.icon}
-                    {cat.title}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Search — right of pills */}
-            <form onSubmit={handleSearch} className="shrink-0">
-              <div className="flex rounded-lg overflow-hidden border border-white/20">
-                <input
-                  type="text"
-                  placeholder="Search notices…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-44 px-3 py-1.5 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15"
-                />
-                <button
-                  type="submit"
-                  className="bg-gold-500 hover:bg-gold-400 px-2.5 py-1.5 transition-colors"
-                  aria-label="Search"
+          {/* Category pills — full row, wraps if needed */}
+          <div className="flex items-center gap-1.5 flex-wrap mt-auto">
+            {NAV_CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat.slug;
+              const solidClass = categoryColourMap[cat.colour] || "bg-navy-600";
+              return (
+                <Link
+                  key={cat.slug}
+                  href={`/category/${cat.slug}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
+                    isActive
+                      ? `${solidClass} text-white border-transparent shadow-sm`
+                      : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
+                  }`}
                 >
-                  <Search className="h-4 w-4 text-navy-900" />
-                </button>
-              </div>
-            </form>
+                  {cat.icon}
+                  {cat.title}
+                </Link>
+              );
+            })}
           </div>
+
+          {/* Search — below pills */}
+          <form onSubmit={handleSearch} className="mt-2">
+            <div className="flex rounded-lg overflow-hidden border border-white/20 w-fit">
+              <input
+                type="text"
+                placeholder="Search notices…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-52 px-3 py-1.5 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15"
+              />
+              <button
+                type="submit"
+                className="bg-gold-500 hover:bg-gold-400 px-2.5 py-1.5 transition-colors"
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4 text-navy-900" />
+              </button>
+            </div>
+          </form>
         </div>
 
         {/* Right: logo fills full header height */}
@@ -194,16 +156,6 @@ export default function Header() {
 
         {/* Mobile pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-          <Link
-            href="/notices"
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${
-              activeCategory === "all"
-                ? "bg-white text-navy-900 border-white"
-                : "text-white/80 border-white/20 bg-white/8"
-            }`}
-          >
-            <Grid3X3 className="h-3 w-3" />All Notices
-          </Link>
           {NAV_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.slug;
             const solidClass = categoryColourMap[cat.colour] || "bg-navy-600";
@@ -227,9 +179,6 @@ export default function Header() {
       {/* Mobile expanded menu */}
       {menuOpen && (
         <div className="md:hidden bg-navy-900 px-4 py-3 border-t border-white/10 flex gap-4">
-          <Link href="/" className="text-white/70 text-sm font-medium" onClick={() => setMenuOpen(false)}>
-            Home
-          </Link>
           <Link href="/submit" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>
             Submit a notice
           </Link>

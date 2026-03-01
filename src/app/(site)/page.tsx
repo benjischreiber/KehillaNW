@@ -1,13 +1,11 @@
 import { client } from "@/sanity/lib/client";
 import {
-  featuredNoticesQuery,
   recentNoticesQuery,
   upcomingEventsQuery,
   activeBannersQuery,
   mazalTovQuery,
 } from "@/lib/queries";
 import { Notice, Banner, MazalTov } from "@/lib/types";
-import FeaturedCarousel from "@/components/FeaturedCarousel";
 import UpcomingTicker from "@/components/UpcomingTicker";
 import NoticeCard from "@/components/NoticeCard";
 import MazalTovSection from "@/components/MazalTovSection";
@@ -18,18 +16,17 @@ import { urlFor } from "@/sanity/lib/image";
 export const revalidate = 300;
 
 async function getData() {
-  const [featured, recent, events, banners, mazalTov] = await Promise.all([
-    client.fetch<Notice[]>(featuredNoticesQuery).catch(() => []),
+  const [recent, events, banners, mazalTov] = await Promise.all([
     client.fetch<Notice[]>(recentNoticesQuery).catch(() => []),
     client.fetch<Notice[]>(upcomingEventsQuery).catch(() => []),
     client.fetch<Banner[]>(activeBannersQuery).catch(() => []),
     client.fetch<MazalTov[]>(mazalTovQuery).catch(() => []),
   ]);
-  return { featured, recent, events, banners, mazalTov };
+  return { recent, events, banners, mazalTov };
 }
 
 export default async function HomePage() {
-  const { featured, recent, events, banners, mazalTov } = await getData();
+  const { recent, events, banners, mazalTov } = await getData();
 
   return (
     <>
@@ -61,9 +58,6 @@ export default async function HomePage() {
           </div>
         </div>
       )}
-
-      {/* Featured carousel */}
-      {featured.length > 0 && <FeaturedCarousel notices={featured} />}
 
       {/* Main content */}
       <div className="max-w-7xl mx-auto px-4 py-10">

@@ -49,7 +49,7 @@ export default function FeaturedCarousel({ notices }: FeaturedCarouselProps) {
       : "bg-navy-600";
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ minHeight: "340px" }}>
+    <section className="relative w-full overflow-hidden" style={{ height: "200px" }}>
 
       {/* Background: notice image or navy gradient */}
       <div
@@ -76,27 +76,28 @@ export default function FeaturedCarousel({ notices }: FeaturedCarouselProps) {
 
       {/* Slide content */}
       <div
-        className="relative max-w-7xl mx-auto px-6 sm:px-10 py-14 sm:py-20 transition-all duration-300"
+        className="relative max-w-7xl mx-auto px-6 sm:px-10 py-6 sm:py-8 transition-all duration-300"
         style={{ opacity: fading ? 0 : 1, transform: fading ? "translateY(6px)" : "translateY(0)" }}
       >
         <div className="max-w-xl">
-          {/* Category badge */}
-          {notice.categoryTitle && (
-            <span
-              className={`inline-block text-xs font-bold px-3 py-1 rounded-full text-white mb-4 ${solidClass}`}
-            >
-              {notice.categoryTitle}
-            </span>
-          )}
+          {/* Labels row */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-gold-400 text-xs font-bold uppercase tracking-widest">★ Featured</span>
+            {notice.categoryTitle && (
+              <span className={`inline-block text-xs font-bold px-2 py-0.5 rounded-full text-white ${solidClass}`}>
+                {notice.categoryTitle}
+              </span>
+            )}
+          </div>
 
           {/* Title */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 leading-tight drop-shadow-lg">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 leading-tight drop-shadow-lg line-clamp-2">
             {notice.title}
           </h2>
 
           {/* Summary */}
           {notice.summary && (
-            <p className="text-white/80 text-sm sm:text-base mb-6 line-clamp-3 leading-relaxed">
+            <p className="text-white/80 text-xs sm:text-sm mb-4 line-clamp-1 leading-relaxed hidden sm:block">
               {notice.summary}
             </p>
           )}
@@ -106,7 +107,7 @@ export default function FeaturedCarousel({ notices }: FeaturedCarouselProps) {
             href={href}
             target={isExternal ? "_blank" : undefined}
             rel={isExternal ? "noopener noreferrer" : undefined}
-            className="inline-block bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-7 py-3 rounded-full text-sm transition-colors shadow-lg"
+            className="inline-block bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-5 py-2 rounded-full text-xs transition-colors shadow-lg"
           >
             Read more →
           </Link>

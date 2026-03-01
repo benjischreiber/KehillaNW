@@ -18,7 +18,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="absolute inset-0 bg-white/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-white/55 pointer-events-none" />
         <div className="relative">
           {children}
         </div>
