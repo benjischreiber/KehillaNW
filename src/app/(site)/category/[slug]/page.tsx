@@ -2,7 +2,7 @@ import { client } from "@/sanity/lib/client";
 import { noticesByCategory, categoryWithParent, subcategoriesForParent } from "@/lib/queries";
 import { Notice } from "@/lib/types";
 import { categoryColourMap, categoryColourTintMap } from "@/lib/types";
-import NoticeCard from "@/components/NoticeCard";
+import NoticeScrollUp from "@/components/NoticeScrollUp";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { groq } from "next-sanity";
@@ -135,11 +135,7 @@ export default async function CategoryPage({ params }: Props) {
           <p className="text-gray-500 font-semibold text-lg">No notices in this category yet</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {notices.map((notice) => (
-            <NoticeCard key={notice._id} notice={notice} size="lg" />
-          ))}
-        </div>
+        <NoticeScrollUp notices={notices} />
       )}
     </div>
   );

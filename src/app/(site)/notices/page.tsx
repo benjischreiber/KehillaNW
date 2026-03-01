@@ -1,7 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import { allNoticesQuery, mainNavCategoriesQuery } from "@/lib/queries";
 import { Notice, Category } from "@/lib/types";
-import NoticeCard from "@/components/NoticeCard";
+import NoticeScrollUp from "@/components/NoticeScrollUp";
 import Link from "next/link";
 import { groq } from "next-sanity";
 
@@ -100,11 +100,7 @@ export default async function NoticesPage({ searchParams }: Props) {
           {q && <p className="text-gray-400 text-sm mt-2">Try a different search term</p>}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {notices.map((notice) => (
-            <NoticeCard key={notice._id} notice={notice} size="lg" />
-          ))}
-        </div>
+        <NoticeScrollUp notices={notices} />
       )}
     </div>
   );
