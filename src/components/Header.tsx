@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import {
-  Search, Menu, X,
+  Search, Menu, X, Home,
   Building2, Heart, ShoppingBag, GraduationCap, Users, Sparkles,
 } from "lucide-react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -33,7 +33,7 @@ export default function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/notices?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -46,20 +46,35 @@ export default function Header() {
         {/* Left column: brand + pills + search */}
         <div className="flex-1 min-w-0 flex flex-col">
 
-          {/* Brand headline */}
-          <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">
-            NW London Community
-          </p>
-          <p className="text-2xl sm:text-3xl font-bold leading-tight mb-1">
-            What&apos;s happening in the{" "}
-            <span className="text-gold-400">Kehilla</span>
-          </p>
-          <p className="text-navy-200 text-sm mb-4">
-            Notices, events &amp; useful info — updated daily
-          </p>
+          {/* Brand headline — centred between top and pills */}
+          <div className="flex-1 flex flex-col justify-center">
+            <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">
+              NW London Community
+            </p>
+            <p className="text-2xl sm:text-3xl font-bold leading-tight mb-1">
+              What&apos;s happening in the{" "}
+              <span className="text-gold-400">Kehilla</span>
+            </p>
+            <p className="text-navy-200 text-sm">
+              Notices, events &amp; useful info — updated daily
+            </p>
+          </div>
 
           {/* Category pills — full row, wraps if needed */}
-          <div className="flex items-center gap-1.5 flex-wrap mt-auto">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {/* Home pill — first */}
+            <Link
+              href="/"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
+                pathname === "/"
+                  ? "bg-white text-navy-900 border-white shadow-sm"
+                  : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
+              }`}
+            >
+              <Home className="h-3.5 w-3.5" />
+              Home
+            </Link>
+
             {NAV_CATEGORIES.map((cat) => {
               const isActive = activeCategory === cat.slug;
               const solidClass = categoryColourMap[cat.colour] || "bg-navy-600";
@@ -156,6 +171,16 @@ export default function Header() {
 
         {/* Mobile pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
+          <Link
+            href="/"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${
+              pathname === "/"
+                ? "bg-white text-navy-900 border-white"
+                : "text-white/80 border-white/20 bg-white/8"
+            }`}
+          >
+            <Home className="h-3 w-3" />Home
+          </Link>
           {NAV_CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.slug;
             const solidClass = categoryColourMap[cat.colour] || "bg-navy-600";
