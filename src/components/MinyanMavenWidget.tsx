@@ -26,14 +26,14 @@ function todayDate(): string {
   return `${dd}-${mm}-${d.getFullYear()}`;
 }
 
-function serviceFromTimes(duskIso: string | null, sunriseIso: string | null): ServiceKey {
+function serviceFromTimes(
+  duskIso: string | null,
+  chatzotIso: string | null,
+): ServiceKey {
   const now = Date.now();
-  // After nightfall → Maariv
-  if (duskIso && now >= new Date(duskIso).getTime()) return "maariv";
-  // Before ~end of Shacharit window (11am, or before sunrise) → Shacharit
-  if (sunriseIso && now < new Date(sunriseIso).getTime() + 90 * 60 * 1000) return "shacharith";
-  if (new Date().getHours() < 11) return "shacharith";
-  return "mincha";
+  if (duskIso   && now >= new Date(duskIso).getTime())   return "maariv";
+  if (chatzotIso && now >= new Date(chatzotIso).getTime()) return "mincha";
+  return "shacharith";
 }
 
 const TABS: { key: ServiceKey; en: string; he: string }[] = [
@@ -66,8 +66,8 @@ export default function MinyanMavenWidget() {
         .then<{ shacharith: ServiceData; mincha: ServiceData; maariv: ServiceData }>((r) => r.json()),
     ]).then(([zmanim, minyanim]) => {
       const dusk    = zmanim?.times?.dusk    ?? null;
-      const sunrise = zmanim?.times?.sunrise ?? null;
-      setActive(serviceFromTimes(dusk, sunrise));
+      const chatzot = zmanim?.times?.chatzot ?? null;
+      setActive(serviceFromTimes(dusk, chatzot));
 
       setLists({
         shacharith: minyanim.shacharith.list ?? {},
@@ -76,8 +76,9 @@ export default function MinyanMavenWidget() {
       });
       setLoading(false);
     }).catch(() => {
-      // Fall back to fixed-hour logic if either fetch fails
-      setActive(new Date().getHours() < 11 ? "shacharith" : new Date().getHours() < 17 ? "mincha" : "maariv");
+      // Fall back to rough fixed-hour logic if fetches fail
+      const h = new Date().getHours();
+      setActive(h < 12 ? "shacharith" : h < 18 ? "mincha" : "maariv");
       setError(true);
       setLoading(false);
     });
