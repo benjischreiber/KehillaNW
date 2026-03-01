@@ -33,67 +33,59 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-r from-navy-950 to-navy-800 text-white sticky top-0 z-50 shadow-lg">
-
-      {/* ── Top row: logo + search + links ── */}
+    <header className="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-700 text-white sticky top-0 z-50 shadow-lg border-b-4 border-gold-500">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center gap-4 py-2">
 
-          {/* Logo — spans visually into the category row */}
-          <Link href="/" className="shrink-0 bg-white rounded-xl px-2.5 py-1.5 hover:opacity-90 transition-opacity">
+        {/* ── Grid: logo spans 2 rows, right side has top bar + cat nav ── */}
+        <div className="hidden md:grid grid-cols-[auto_1fr] gap-x-5">
+
+          {/* Logo — row-span-2 so it straddles both rows */}
+          <Link
+            href="/"
+            className="row-span-2 self-center bg-white rounded-xl px-3 py-2 my-2 hover:opacity-90 transition-opacity"
+          >
             <Image
               src="/logosmall.png"
               alt="KehillaNW.org"
-              width={240}
-              height={56}
-              className="h-11 w-auto"
+              width={260}
+              height={60}
+              className="h-14 w-auto"
               priority
             />
           </Link>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-lg hidden sm:flex">
-            <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
-              <input
-                type="text"
-                placeholder="Search notices…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-4 py-2 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none focus:bg-navy-700"
-              />
-              <button type="submit" className="bg-gold-500 hover:bg-gold-400 px-4 py-2 transition-colors" aria-label="Search">
-                <Search className="h-4 w-4 text-navy-900" />
-              </button>
-            </div>
-          </form>
-
-          {/* Right links */}
-          <div className="hidden md:flex items-center gap-3 ml-auto shrink-0">
-            <Link href="/submit" className="text-gold-300 hover:text-gold-100 text-sm font-medium transition-colors">
+          {/* Top-right: search + links */}
+          <div className="flex items-center gap-3 py-2 border-b border-navy-700">
+            <form onSubmit={handleSearch} className="flex-1 max-w-lg flex">
+              <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
+                <input
+                  type="text"
+                  placeholder="Search notices…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 px-4 py-1.5 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none focus:bg-navy-700"
+                />
+                <button type="submit" className="bg-gold-500 hover:bg-gold-400 px-3 py-1.5 transition-colors" aria-label="Search">
+                  <Search className="h-4 w-4 text-navy-900" />
+                </button>
+              </div>
+            </form>
+            <Link href="/submit" className="text-gold-300 hover:text-gold-100 text-sm font-medium transition-colors whitespace-nowrap">
               Submit a notice
             </Link>
-            <Link href="/about" className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1.5 rounded-full text-sm transition-colors">
+            <Link href="/about" className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold px-3 py-1.5 rounded-full text-sm transition-colors whitespace-nowrap">
               About
             </Link>
           </div>
 
-          {/* Mobile toggle */}
-          <button className="md:hidden ml-auto" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
-            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* ── Category nav row ── */}
-      <div className="border-t border-navy-700 border-b-2 border-b-gold-500">
-        <div className="max-w-7xl mx-auto px-4">
+          {/* Bottom-right: category pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1.5">
             <Link
               href="/notices"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
                 activeCategory === "all"
-                  ? "bg-white text-navy-900 border-white"
-                  : "text-navy-200 border-navy-600 hover:border-navy-400 hover:text-white"
+                  ? "bg-white text-navy-900 border-white shadow-sm"
+                  : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
               }`}
             >
               <Grid3X3 className="h-3.5 w-3.5" />
@@ -106,10 +98,10 @@ export default function Header() {
                 <Link
                   key={cat.slug}
                   href={`/category/${cat.slug}`}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
                     isActive
-                      ? `${solidClass} text-white border-transparent`
-                      : "text-navy-200 border-navy-600 hover:border-navy-400 hover:text-white"
+                      ? `${solidClass} text-white border-transparent shadow-sm`
+                      : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
                   }`}
                 >
                   {cat.icon}
@@ -119,27 +111,54 @@ export default function Header() {
             })}
           </div>
         </div>
+
+        {/* ── Mobile layout (single row + hamburger) ── */}
+        <div className="md:hidden flex items-center gap-3 py-2">
+          <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1 hover:opacity-90 transition-opacity">
+            <Image src="/logosmall.png" alt="KehillaNW.org" width={160} height={38} className="h-9 w-auto" priority />
+          </Link>
+          <form onSubmit={handleSearch} className="flex-1">
+            <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
+              <input
+                type="text"
+                placeholder="Search…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 px-3 py-1.5 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none"
+              />
+              <button type="submit" className="bg-gold-500 px-3 py-1.5">
+                <Search className="h-4 w-4 text-navy-900" />
+              </button>
+            </div>
+          </form>
+          <button className="shrink-0" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+
+        {/* Mobile: category pills row */}
+        <div className="md:hidden flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-2 border-t border-white/10 pt-1.5">
+          <Link href="/notices" className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${activeCategory === "all" ? "bg-white text-navy-900 border-white" : "text-white/80 border-white/20 bg-white/8"}`}>
+            <Grid3X3 className="h-3 w-3" />All
+          </Link>
+          {NAV_CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.slug;
+            const solidClass = categoryColourMap[cat.colour] || "bg-navy-600";
+            return (
+              <Link key={cat.slug} href={`/category/${cat.slug}`}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${isActive ? `${solidClass} text-white border-transparent` : "text-white/80 border-white/20 bg-white/8"}`}>
+                {cat.icon}{cat.title}
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
-      {/* ── Mobile menu ── */}
+      {/* Mobile expanded menu */}
       {menuOpen && (
-        <div className="md:hidden bg-navy-800 px-4 py-4 space-y-3 border-t border-navy-700">
-          <form onSubmit={handleSearch} className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search notices…"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 px-3 py-2 bg-navy-700 text-white placeholder-navy-300 text-sm rounded-lg focus:outline-none"
-            />
-            <button type="submit" className="bg-gold-500 text-navy-900 px-3 py-2 rounded-lg">
-              <Search className="h-4 w-4" />
-            </button>
-          </form>
-          <nav className="flex flex-wrap gap-3">
-            <Link href="/submit" className="text-gold-300 hover:text-white text-sm font-medium" onClick={() => setMenuOpen(false)}>Submit a notice</Link>
-            <Link href="/about" className="text-gold-300 hover:text-white text-sm font-medium" onClick={() => setMenuOpen(false)}>About</Link>
-          </nav>
+        <div className="md:hidden bg-navy-800 px-4 py-3 border-t border-navy-700 flex gap-4">
+          <Link href="/submit" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>Submit a notice</Link>
+          <Link href="/about" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>About</Link>
         </div>
       )}
     </header>

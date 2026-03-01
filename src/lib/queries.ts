@@ -74,6 +74,21 @@ export const mazalTovQuery = groq`
   }
 `;
 
+export const categoryWithParent = groq`
+  *[_type == "category" && slug.current == $slug][0]{
+    _id, title, colour,
+    "parentSlug": parent->slug.current,
+    "parentTitle": parent->title,
+    "parentColour": parent->colour,
+  }
+`;
+
+export const subcategoriesForParent = groq`
+  *[_type == "category" && parent->slug.current == $parentSlug] | order(order asc, title asc){
+    _id, title, colour, "slug": slug.current
+  }
+`;
+
 export const topNavCategoriesQuery = groq`
   *[_type == "category" && showInTopNav == true] | order(order asc){
     _id, title, slug
