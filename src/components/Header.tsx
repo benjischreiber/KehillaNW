@@ -56,7 +56,7 @@ export default function Header() {
               <span className="text-gold-400">Kehilla</span>
             </p>
             <p className="text-navy-200 text-sm">
-              Notices, events &amp; useful info — updated daily
+              Notices, events &amp; useful info
             </p>
           </div>
 
