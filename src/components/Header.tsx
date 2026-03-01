@@ -38,10 +38,16 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 text-white border-b-4 border-gold-500 shadow-xl">
+    <header
+      className="text-white border-b-4 border-gold-500 shadow-xl relative overflow-hidden"
+      style={{ backgroundImage: "url('/sky.svg')", backgroundSize: "cover", backgroundPosition: "center top" }}
+    >
+
+      {/* Dark overlay so white text stays readable against sky */}
+      <div className="absolute inset-0 bg-navy-950/45 pointer-events-none" />
 
       {/* ── Desktop ── */}
-      <div className="hidden md:flex items-stretch gap-6 max-w-7xl mx-auto px-6 py-5">
+      <div className="hidden md:flex items-stretch gap-6 max-w-7xl mx-auto px-6 py-5 relative">
 
         {/* Left column: brand + pills + search */}
         <div className="flex-1 min-w-0 flex flex-col">
@@ -134,7 +140,7 @@ export default function Header() {
       </div>
 
       {/* ── Mobile ── */}
-      <div className="md:hidden px-4 pt-3 pb-2">
+      <div className="md:hidden px-4 pt-3 pb-2 relative">
         <div className="flex items-center gap-3 mb-2">
           <Link href="/" className="shrink-0">
             <Image
@@ -203,7 +209,7 @@ export default function Header() {
 
       {/* Mobile expanded menu */}
       {menuOpen && (
-        <div className="md:hidden bg-navy-900 px-4 py-3 border-t border-white/10 flex gap-4">
+        <div className="md:hidden bg-navy-900/80 px-4 py-3 border-t border-white/10 flex gap-4 relative">
           <Link href="/submit" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>
             Submit a notice
           </Link>
