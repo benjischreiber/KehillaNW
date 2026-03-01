@@ -100,8 +100,14 @@ export default function MinyanMavenWidget() {
       else break;
     }
     if (target) {
-      const el = scrollRef.current.querySelector<HTMLElement>(`[data-time="${target}"]`);
-      el?.scrollIntoView({ block: "nearest" });
+      const container = scrollRef.current;
+      const el = container.querySelector<HTMLElement>(`[data-time="${target}"]`);
+      if (el) {
+        // Scroll so target row sits at the top of the container
+        const elTop = el.getBoundingClientRect().top;
+        const containerTop = container.getBoundingClientRect().top;
+        container.scrollTop += elTop - containerTop;
+      }
     }
   }, [loading, active]); // re-runs when tab changes too
 
