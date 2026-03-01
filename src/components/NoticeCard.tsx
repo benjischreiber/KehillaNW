@@ -32,7 +32,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         rel={isExternal ? "noopener noreferrer" : undefined}
         className="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100"
       >
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative h-40 w-full overflow-hidden">
           {notice.image ? (
             <Image
               src={urlFor(notice.image).width(600).height(400).url()}
@@ -51,8 +51,8 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
             </span>
           )}
         </div>
-        <div className="p-5">
-          <h3 className="font-bold text-navy-900 text-lg leading-snug group-hover:text-gold-600 transition-colors mb-2">
+        <div className="p-4">
+          <h3 className="font-bold text-navy-900 text-base leading-snug group-hover:text-gold-600 transition-colors mb-1.5">
             {notice.title}
           </h3>
           {notice.summary && (

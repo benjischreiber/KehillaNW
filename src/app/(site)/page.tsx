@@ -7,7 +7,7 @@ import {
 } from "@/lib/queries";
 import { Notice, Banner, MazalTov } from "@/lib/types";
 import UpcomingTicker from "@/components/UpcomingTicker";
-import NoticeCard from "@/components/NoticeCard";
+import NoticeMarquee from "@/components/NoticeMarquee";
 import MazalTovSection from "@/components/MazalTovSection";
 import Image from "next/image";
 import Link from "next/link";
@@ -81,11 +81,7 @@ export default async function HomePage() {
             <p className="text-sm">Notices will appear here once added via the admin.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {recent.map((notice) => (
-              <NoticeCard key={notice._id} notice={notice} size="lg" />
-            ))}
-          </div>
+          <NoticeMarquee notices={recent} />
         )}
 
         {recent.length > 0 && (

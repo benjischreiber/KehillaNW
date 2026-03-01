@@ -59,7 +59,7 @@ export default function Header() {
             </p>
             <p className="text-2xl sm:text-3xl font-bold leading-tight mb-1">
               What&apos;s happening in the{" "}
-              <span className="text-gold-400">Kehilla</span>
+              <span className="text-gold-400" style={{ textShadow: '0 0 18px rgba(234,179,8,0.8), 0 0 40px rgba(234,179,8,0.4)' }}>Kehilla</span>
             </p>
             <p className="text-navy-200 text-sm">
               Notices, events &amp; useful info
@@ -74,7 +74,7 @@ export default function Header() {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
                 pathname === "/"
                   ? "bg-white text-navy-900 border-white shadow-sm"
-                  : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
+                  : "bg-white/50 backdrop-blur-sm text-navy-900 border-white/60 hover:bg-white/75"
               }`}
             >
               <Home className="h-3.5 w-3.5" />
@@ -91,7 +91,7 @@ export default function Header() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
                     isActive
                       ? `${solidClass} text-white border-transparent shadow-sm`
-                      : "text-white/80 border-white/20 bg-white/8 hover:bg-white/15 hover:border-white/50 hover:text-white"
+                      : "bg-white/50 backdrop-blur-sm text-navy-900 border-white/60 hover:bg-white/75"
                   }`}
                 >
                   {cat.icon}
