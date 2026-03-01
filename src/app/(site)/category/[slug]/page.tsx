@@ -31,10 +31,12 @@ interface SubCat {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const cat = await client.fetch<{ title: string }>(
-    groq`*[_type == "category" && slug.current == $slug][0]{ title }`,
-    { slug }
-  ).catch(() => null);
+  const cat = await client
+    .fetch<{ title: string }>(
+      groq`*[_type == "category" && slug.current == $slug][0]{ title }`,
+      { slug }
+    )
+    .catch(() => null);
   return {
     title: cat?.title || slug.replace(/-/g, " "),
   };
@@ -59,12 +61,12 @@ export default async function CategoryPage({ params }: Props) {
   const colour = catInfo?.colour || catInfo?.parentColour || "blue";
   const solidClass = categoryColourMap[colour] || "bg-navy-700";
 
-  // When showing siblings (isSubcategory), the "All" link goes to the parent
   const allHref = isSubcategory ? `/category/${catInfo!.parentSlug}` : `/category/${slug}`;
   const allLabel = isSubcategory ? `All ${catInfo!.parentTitle}` : `All ${title}`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 mb-4">
         <Link

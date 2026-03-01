@@ -15,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 
-export const revalidate = 300; // revalidate every 5 minutes
+export const revalidate = 300;
 
 async function getData() {
   const [featured, recent, events, banners, mazalTov] = await Promise.all([
@@ -33,48 +33,12 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero banner */}
-      <div className="bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 text-white py-8 px-4 relative overflow-hidden">
-        {/* decorative gold blobs */}
-        <div className="absolute -top-10 -right-10 w-64 h-64 bg-gold-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-20 w-48 h-48 bg-gold-400 rounded-full opacity-5 blur-2xl pointer-events-none" />
-        <div className="max-w-7xl mx-auto relative">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <div className="flex-1">
-              <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">NW London Community</p>
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
-                What&apos;s happening in the <span className="text-gold-400">Kehilla</span>
-              </h1>
-              <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
-              <div className="mt-4">
-                <Link
-                  href="/submit"
-                  className="inline-block bg-gold-500 text-navy-900 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors whitespace-nowrap"
-                >
-                  Submit a Notice
-                </Link>
-              </div>
-            </div>
-            <div className="hidden sm:flex justify-end shrink-0">
-              <Image
-                src="/logo.png"
-                alt="KehillaNW — Connecting Our Community"
-                width={260}
-                height={200}
-                className="h-40 w-auto rounded-2xl shadow-2xl"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Upcoming events ticker */}
       {events.length > 0 && <UpcomingTicker events={events} />}
 
-      {/* ── Street wallpaper section ── */}
+      {/* ── Street wallpaper — everything below the header ── */}
       <div
-        className="relative"
+        className="relative flex-1"
         style={{
           backgroundImage: "url('/street.png')",
           backgroundSize: "cover",
@@ -82,156 +46,155 @@ export default async function HomePage() {
           backgroundAttachment: "fixed",
         }}
       >
-        {/* Warm cream overlay so cards pop without losing the street scene */}
-        <div className="absolute inset-0 bg-cream/70 pointer-events-none" />
+        {/* Light overlay so cards pop but street stays clearly visible */}
+        <div className="absolute inset-0 bg-white/30 pointer-events-none" />
 
         <div className="relative">
 
-      {/* Banner ads */}
-      {banners.length > 0 && (
-        <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100 py-4">
-          <div className="max-w-7xl mx-auto px-4">
-            {banners.map((banner) => (
-              <a
-                key={banner._id}
-                href={banner.link || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-xl overflow-hidden"
-              >
-                <div className="relative h-24 sm:h-32 w-full">
-                  <Image
-                    src={urlFor(banner.image).width(1200).height(200).url()}
-                    alt={banner.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
+          {/* Banner ads */}
+          {banners.length > 0 && (
+            <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100 py-4">
+              <div className="max-w-7xl mx-auto px-4">
+                {banners.map((banner) => (
+                  <a
+                    key={banner._id}
+                    href={banner.link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-xl overflow-hidden"
+                  >
+                    <div className="relative h-24 sm:h-32 w-full">
+                      <Image
+                        src={urlFor(banner.image).width(1200).height(200).url()}
+                        alt={banner.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* Featured carousel */}
-      {featured.length > 0 && <FeaturedCarousel notices={featured} />}
+          {/* Featured carousel */}
+          {featured.length > 0 && <FeaturedCarousel notices={featured} />}
 
-      {/* Main content */}
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent notices — 2/3 width */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Recent notices */}
-            <section>
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-2xl font-bold text-navy-900">
-                  Recent <span className="text-gold-500">Notices</span>
-                </h2>
-                <Link
-                  href="/notices"
-                  className="text-sm font-semibold text-navy-700 hover:text-gold-600 transition-colors"
-                >
-                  View all →
-                </Link>
+          {/* Main content grid */}
+          <div className="max-w-7xl mx-auto px-4 py-10">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+              {/* Recent notices — 2/3 width */}
+              <div className="lg:col-span-2 space-y-8">
+                <section>
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-2xl font-bold text-navy-900">
+                      Recent <span className="text-gold-500">Notices</span>
+                    </h2>
+                    <Link
+                      href="/notices"
+                      className="text-sm font-semibold text-navy-700 hover:text-gold-600 transition-colors"
+                    >
+                      View all →
+                    </Link>
+                  </div>
+
+                  {recent.length === 0 ? (
+                    <div className="bg-white rounded-2xl p-12 text-center text-gray-400 border border-dashed border-gray-200">
+                      <p className="font-semibold text-lg mb-1">No notices yet</p>
+                      <p className="text-sm">Notices will appear here once added via the admin.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {recent.map((notice) => (
+                        <NoticeCard key={notice._id} notice={notice} size="md" />
+                      ))}
+                    </div>
+                  )}
+
+                  {recent.length > 0 && (
+                    <div className="mt-6 text-center">
+                      <Link
+                        href="/notices"
+                        className="inline-block bg-navy-900 text-white px-8 py-3 rounded-full font-semibold hover:bg-navy-700 transition-colors"
+                      >
+                        Read more
+                      </Link>
+                    </div>
+                  )}
+                </section>
               </div>
 
-              {recent.length === 0 ? (
-                <div className="bg-white rounded-2xl p-12 text-center text-gray-400 border border-dashed border-gray-200">
-                  <p className="font-semibold text-lg mb-1">No notices yet</p>
-                  <p className="text-sm">Notices will appear here once added via the admin.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {recent.map((notice) => (
-                    <NoticeCard key={notice._id} notice={notice} size="md" />
-                  ))}
-                </div>
-              )}
+              {/* Sidebar — 1/3 width */}
+              <div className="space-y-6">
+                {mazalTov.length > 0 && <MazalTovSection items={mazalTov} />}
 
-              {recent.length > 0 && (
-                <div className="mt-6 text-center">
+                {/* Zmanim widget */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="bg-navy-900 px-5 py-3">
+                    <h2 className="font-bold text-white">Zmanim for NW London</h2>
+                  </div>
+                  <div className="p-5">
+                    <a
+                      href="https://www.myzmanim.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-center mb-3"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://www.myzmanim.com/widget/?lat=51.5832&lng=-0.2005&tzid=Europe/London&zm=m&zs=d&st=1&ft=1&ab=1"
+                        alt="Zmanim for NW London"
+                        className="mx-auto w-full max-w-xs"
+                        width={300}
+                        height={200}
+                      />
+                    </a>
+                    <a
+                      href="https://kehillanw.org/Mincha_Maariv_Schedule.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-center text-sm text-navy-700 font-semibold hover:text-gold-600 transition-colors"
+                    >
+                      Download weekly Mincha/Maariv Zmanim sheet
+                    </a>
+                  </div>
+                </div>
+
+                {/* Submit a notice CTA */}
+                <div className="bg-gradient-to-br from-navy-900 to-navy-700 text-white rounded-2xl p-6 text-center">
+                  <h3 className="font-bold text-lg mb-2">Submit a Notice</h3>
+                  <p className="text-navy-200 text-sm mb-4 leading-relaxed">
+                    Have something to share with the community? Submit your notice to be posted on KehillaNW.
+                  </p>
                   <Link
-                    href="/notices"
-                    className="inline-block bg-navy-900 text-white px-8 py-3 rounded-full font-semibold hover:bg-navy-700 transition-colors"
+                    href="/submit"
+                    className="inline-block bg-gold-500 text-navy-900 font-bold px-6 py-2.5 rounded-full hover:bg-gold-400 transition-colors text-sm"
                   >
-                    Read more
+                    Submit a Notice
                   </Link>
                 </div>
-              )}
-            </section>
-          </div>
 
-          {/* Sidebar — 1/3 width */}
-          <div className="space-y-6">
-            {/* Mazal Tov */}
-            {mazalTov.length > 0 && <MazalTovSection items={mazalTov} />}
-
-            {/* Zmanim widget */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-navy-900 px-5 py-3">
-                <h2 className="font-bold text-white">Zmanim for NW London</h2>
-              </div>
-              <div className="p-5">
-                <a
-                  href="https://www.myzmanim.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center mb-3"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://www.myzmanim.com/widget/?lat=51.5832&lng=-0.2005&tzid=Europe/London&zm=m&zs=d&st=1&ft=1&ab=1"
-                    alt="Zmanim for NW London"
-                    className="mx-auto w-full max-w-xs"
-                    width={300}
-                    height={200}
-                  />
-                </a>
-                <a
-                  href="https://kehillanw.org/Mincha_Maariv_Schedule.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center text-sm text-navy-700 font-semibold hover:text-gold-600 transition-colors"
-                >
-                  Download weekly Mincha/Maariv Zmanim sheet
-                </a>
+                {/* WhatsApp CTA */}
+                <div className="bg-green-50 border border-green-200 rounded-2xl p-5 text-center">
+                  <p className="text-green-800 font-semibold text-sm mb-2">
+                    📱 Get updates on WhatsApp
+                  </p>
+                  <a
+                    href="https://chat.whatsapp.com/D79ty6r6Lef5wGZdO30Pvj"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-green-600 text-white text-sm font-bold px-5 py-2 rounded-full hover:bg-green-700 transition-colors"
+                  >
+                    Join the WhatsApp Group
+                  </a>
+                </div>
               </div>
             </div>
-
-            {/* Submit a notice CTA */}
-            <div className="bg-gradient-to-br from-navy-900 to-navy-700 text-white rounded-2xl p-6 text-center">
-              <h3 className="font-bold text-lg mb-2">Submit a Notice</h3>
-              <p className="text-navy-200 text-sm mb-4 leading-relaxed">
-                Have something to share with the community? Submit your notice to be posted on KehillaNW.
-              </p>
-              <Link
-                href="/submit"
-                className="inline-block bg-gold-500 text-navy-900 font-bold px-6 py-2.5 rounded-full hover:bg-gold-400 transition-colors text-sm"
-              >
-                Submit a Notice
-              </Link>
-            </div>
-
-            {/* WhatsApp CTA */}
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-5 text-center">
-              <p className="text-green-800 font-semibold text-sm mb-2">
-                📱 Get updates on WhatsApp
-              </p>
-              <a
-                href="https://chat.whatsapp.com/D79ty6r6Lef5wGZdO30Pvj"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-green-600 text-white text-sm font-bold px-5 py-2 rounded-full hover:bg-green-700 transition-colors"
-              >
-                Join the WhatsApp Group
-              </a>
-            </div>
           </div>
+
         </div>
       </div>
-
-        </div>{/* /relative inner */}
-      </div>{/* /street wallpaper */}
     </>
   );
 }
