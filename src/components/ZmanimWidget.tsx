@@ -144,7 +144,7 @@ export default function ZmanimWidget() {
 
             {/* PDF link */}
             <Link
-              href="https://kehillanw.org/Mincha_Maariv_Schedule.pdf"
+              href="https://ggbh.info/Timetable/mincha-times2.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-3 block text-center text-xs text-navy-700 font-semibold hover:text-gold-600 transition-colors"
