@@ -27,9 +27,9 @@ function todayDate(): string {
 }
 
 function currentService(): ServiceKey {
-  const h = new Date().getHours();
+  const h = new Date().getHours(); // browser's local time
   if (h < 11) return "shacharith";
-  if (h < 17) return "mincha";
+  if (h < 19) return "mincha";
   return "maariv";
 }
 
@@ -40,7 +40,9 @@ const TABS: { key: ServiceKey; en: string; he: string }[] = [
 ];
 
 export default function MinyanMavenWidget() {
-  const [active, setActive] = useState<ServiceKey>(currentService());
+  // Start with shacharith to avoid server/client hydration mismatch;
+  // useEffect sets the correct tab using the visitor's browser time.
+  const [active, setActive] = useState<ServiceKey>("shacharith");
   const [lists, setLists] = useState<Record<ServiceKey, Record<string, MinyanEntry[]> | null>>({
     shacharith: null,
     mincha: null,
@@ -50,6 +52,7 @@ export default function MinyanMavenWidget() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    setActive(currentService()); // set correct tab in browser
     const date = todayDate();
     fetch(`/api/minyanim?date=${date}`)
       .then<{ shacharith: ServiceData; mincha: ServiceData; maariv: ServiceData }>((r) => r.json())
