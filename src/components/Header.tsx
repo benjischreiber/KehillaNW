@@ -125,14 +125,14 @@ export default function Header() {
         {/* Right: logo fills full header height */}
         <Link
           href="/"
-          className="shrink-0 self-stretch hover:opacity-90 transition-opacity flex items-center"
+          className="shrink-0 self-stretch hover:opacity-90 transition-opacity flex items-center bg-white/70 backdrop-blur-sm rounded-2xl px-2"
         >
           <Image
             src="/logo.png"
             alt="KehillaNW — Connecting Our Community"
             width={300}
             height={240}
-            className="rounded-2xl shadow-2xl w-auto"
+            className="w-auto"
             style={{ height: "100%", maxHeight: "100%", width: "auto" }}
             priority
           />
