@@ -38,13 +38,13 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
     <header className="bg-gradient-to-r from-navy-950 to-navy-800 text-white sticky top-0 z-50 shadow-lg border-b-2 border-gold-500">
       <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-4">
         {/* Logo */}
-        <Link href="/" className="shrink-0">
+        <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1 hover:opacity-90 transition-opacity">
           <Image
             src="/logo.png"
             alt="KehillaNW — Home of the NW London Kehilla"
             width={200}
             height={44}
-            className="h-10 w-auto"
+            className="h-8 w-auto"
             priority
           />
         </Link>
