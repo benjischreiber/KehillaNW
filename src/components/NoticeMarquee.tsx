@@ -25,7 +25,7 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
 
       <div
         className="overflow-hidden"
-        style={{ maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)" }}
+        style={{ maskImage: "linear-gradient(to right, black 90%, transparent)" }}
       >
         <div className="marquee-track flex gap-4 w-max">
           {doubled.map((notice, i) => (
