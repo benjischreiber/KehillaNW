@@ -34,40 +34,38 @@ export default function Header() {
 
   return (
     <header className="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-700 text-white sticky top-0 z-50 shadow-lg border-b-4 border-gold-500">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-6 md:px-8">
 
-        {/* ── Grid: logo spans 2 rows, right side has top bar + cat nav ── */}
-        <div className="hidden md:grid grid-cols-[auto_1fr] gap-x-5">
+        {/* ── Desktop: logo left, search + categories right ── */}
+        <div className="hidden md:grid grid-cols-[auto_1fr] gap-x-8">
 
-          {/* Logo — row-span-2, sits at bottom and overflows below header */}
+          {/* Logo — directly on navy, no white box, white version via filter */}
           <Link
             href="/"
-            className="row-span-2 flex items-end relative z-10 hover:opacity-90 transition-opacity"
+            className="row-span-2 flex items-center hover:opacity-80 transition-opacity"
           >
-            <div className="rounded-2xl overflow-hidden shadow-2xl mb-[-36px]">
-              <Image
-                src="/logo.png"
-                alt="KehillaNW.org"
-                width={300}
-                height={280}
-                className="h-32 w-auto block"
-                priority
-              />
-            </div>
+            <Image
+              src="/logosmall.png"
+              alt="KehillaNW.org"
+              width={220}
+              height={56}
+              className="h-14 w-auto brightness-0 invert"
+              priority
+            />
           </Link>
 
-          {/* Top-right: search + links */}
-          <div className="flex items-center gap-3 py-2 border-b border-navy-700">
+          {/* Top row: search + links */}
+          <div className="flex items-center gap-3 py-3 border-b border-white/10">
             <form onSubmit={handleSearch} className="flex-1 max-w-lg flex">
-              <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
+              <div className="flex w-full rounded-lg overflow-hidden border border-white/20">
                 <input
                   type="text"
                   placeholder="Search notices…"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 px-4 py-1.5 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none focus:bg-navy-700"
+                  className="flex-1 px-4 py-2 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none focus:bg-white/15"
                 />
-                <button type="submit" className="bg-gold-500 hover:bg-gold-400 px-3 py-1.5 transition-colors" aria-label="Search">
+                <button type="submit" className="bg-gold-500 hover:bg-gold-400 px-3 py-2 transition-colors" aria-label="Search">
                   <Search className="h-4 w-4 text-navy-900" />
                 </button>
               </div>
@@ -80,8 +78,8 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Bottom-right: category pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1.5">
+          {/* Bottom row: category pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-2">
             <Link
               href="/notices"
               className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 border ${
@@ -114,19 +112,26 @@ export default function Header() {
           </div>
         </div>
 
-        {/* ── Mobile layout (single row + hamburger) ── */}
+        {/* ── Mobile layout ── */}
         <div className="md:hidden flex items-center gap-3 py-2">
-          <Link href="/" className="shrink-0 bg-white rounded-lg px-2 py-1 hover:opacity-90 transition-opacity">
-            <Image src="/logo.png" alt="KehillaNW.org" width={160} height={128} className="h-11 w-auto" priority />
+          <Link href="/" className="shrink-0 hover:opacity-80 transition-opacity">
+            <Image
+              src="/logosmall.png"
+              alt="KehillaNW.org"
+              width={140}
+              height={36}
+              className="h-9 w-auto brightness-0 invert"
+              priority
+            />
           </Link>
           <form onSubmit={handleSearch} className="flex-1">
-            <div className="flex w-full rounded-lg overflow-hidden border border-navy-600">
+            <div className="flex w-full rounded-lg overflow-hidden border border-white/20">
               <input
                 type="text"
                 placeholder="Search…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-3 py-1.5 bg-navy-800 text-white placeholder-navy-300 text-sm focus:outline-none"
+                className="flex-1 px-3 py-1.5 bg-white/10 text-white placeholder-white/40 text-sm focus:outline-none"
               />
               <button type="submit" className="bg-gold-500 px-3 py-1.5">
                 <Search className="h-4 w-4 text-navy-900" />
@@ -158,7 +163,7 @@ export default function Header() {
 
       {/* Mobile expanded menu */}
       {menuOpen && (
-        <div className="md:hidden bg-navy-800 px-4 py-3 border-t border-navy-700 flex gap-4">
+        <div className="md:hidden bg-navy-800 px-4 py-3 border-t border-white/10 flex gap-4">
           <Link href="/submit" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>Submit a notice</Link>
           <Link href="/about" className="text-gold-300 text-sm font-medium" onClick={() => setMenuOpen(false)}>About</Link>
         </div>

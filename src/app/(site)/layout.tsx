@@ -8,7 +8,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <Suspense fallback={null}>
         <Header />
       </Suspense>
-      <main className="flex-1 pt-8 md:pt-10">{children}</main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </div>
   );

@@ -39,31 +39,19 @@ export default async function HomePage() {
         <div className="absolute -top-10 -right-10 w-64 h-64 bg-gold-500 rounded-full opacity-5 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-20 w-48 h-48 bg-gold-400 rounded-full opacity-5 blur-2xl pointer-events-none" />
         <div className="max-w-7xl mx-auto relative">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <div className="flex-1">
-              <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">NW London Community</p>
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
-                What&apos;s happening in the <span className="text-gold-400">Kehilla</span>
-              </h1>
-              <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
-              <div className="mt-4">
-                <Link
-                  href="/submit"
-                  className="inline-block bg-gold-500 text-navy-900 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors whitespace-nowrap"
-                >
-                  Submit a Notice
-                </Link>
-              </div>
-            </div>
-            <div className="hidden sm:flex justify-center sm:justify-end shrink-0">
-              <Image
-                src="/logo.png"
-                alt="KehillaNW — Connecting Our Community"
-                width={260}
-                height={200}
-                className="h-40 w-auto drop-shadow-xl"
-                priority
-              />
+          <div>
+            <p className="text-gold-400 text-xs font-bold uppercase tracking-widest mb-1">NW London Community</p>
+            <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
+              What&apos;s happening in the <span className="text-gold-400">Kehilla</span>
+            </h1>
+            <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
+            <div className="mt-4">
+              <Link
+                href="/submit"
+                className="inline-block bg-gold-500 text-navy-900 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors whitespace-nowrap"
+              >
+                Submit a Notice
+              </Link>
             </div>
           </div>
         </div>
