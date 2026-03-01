@@ -2,12 +2,11 @@ import { client } from "@/sanity/lib/client";
 import { noticeBySlug } from "@/lib/queries";
 import { Notice, categoryColourTextMap } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
-import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
-import { Calendar, ExternalLink, ArrowLeft, Tag, FileText } from "lucide-react";
+import { ExternalLink, ArrowLeft, Tag, FileText } from "lucide-react";
 
 export const revalidate = 300;
 
@@ -73,12 +72,6 @@ export default async function NoticePage({ params }: Props) {
             {notice.secondaryCategoryTitle && (
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600">
                 {notice.secondaryCategoryTitle}
-              </span>
-            )}
-            {notice.publishDate && (
-              <span className="inline-flex items-center gap-1 text-xs text-gray-400">
-                <Calendar className="h-3 w-3" />
-                {formatDate(notice.publishDate)}
               </span>
             )}
           </div>

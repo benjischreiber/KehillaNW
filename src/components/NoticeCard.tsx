@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Notice, categoryColourMap, categoryColourTextMap } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
-import { formatDate } from "@/lib/utils";
 
 interface NoticeCardProps {
   notice: Notice;
@@ -58,9 +57,6 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
           </h3>
           {notice.summary && (
             <p className="text-gray-500 text-sm line-clamp-2">{notice.summary}</p>
-          )}
-          {notice.publishDate && (
-            <p className="text-xs text-gray-400 mt-3">{formatDate(notice.publishDate)}</p>
           )}
         </div>
       </Link>
@@ -130,9 +126,6 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         </h3>
         {notice.summary && (
           <p className="text-sm text-gray-500 line-clamp-2 mt-1">{notice.summary}</p>
-        )}
-        {notice.publishDate && (
-          <p className="text-xs text-gray-400 mt-2">{formatDate(notice.publishDate)}</p>
         )}
       </div>
     </Link>
