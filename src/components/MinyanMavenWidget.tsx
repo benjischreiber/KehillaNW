@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 type MinyanEntry = {
@@ -53,6 +53,7 @@ export default function MinyanMavenWidget() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const date = todayDate();
@@ -86,6 +87,23 @@ export default function MinyanMavenWidget() {
 
   const current = lists[active] ?? {};
   const times = Object.keys(current).sort();
+
+  // After data loads (or tab changes), scroll to the closest time slot
+  useEffect(() => {
+    if (loading || !scrollRef.current) return;
+    const now = new Date();
+    const hhMM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    // Find the last time slot that has already started (≤ now)
+    let target = times[0] ?? null;
+    for (const t of times) {
+      if (t <= hhMM) target = t;
+      else break;
+    }
+    if (target) {
+      const el = scrollRef.current.querySelector<HTMLElement>(`[data-time="${target}"]`);
+      el?.scrollIntoView({ block: "nearest" });
+    }
+  }, [loading, active]); // re-runs when tab changes too
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -121,7 +139,7 @@ export default function MinyanMavenWidget() {
       </div>
 
       {/* Body */}
-      <div className="overflow-y-auto" style={{ maxHeight: "18rem" }}>
+      <div ref={scrollRef} className="overflow-y-auto" style={{ maxHeight: "18rem" }}>
         {loading && (
           <p className="text-center text-gray-400 text-sm py-8">Loading times…</p>
         )}
@@ -135,7 +153,7 @@ export default function MinyanMavenWidget() {
           <div className="divide-y divide-gray-50">
             {times.map((time) =>
               current[time].map((m, i) => (
-                <div key={`${time}-${i}`} className="flex items-start gap-3 px-4 py-2">
+                <div key={`${time}-${i}`} data-time={i === 0 ? time : undefined} className="flex items-start gap-3 px-4 py-2">
                   <span className="w-11 shrink-0 font-bold text-navy-900 tabular-nums text-sm pt-0.5">
                     {i === 0 ? time : ""}
                   </span>
