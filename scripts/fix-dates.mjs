@@ -170,10 +170,9 @@ async function applyMutations(mutations) {
       continue;
     }
     applied += batch.length;
-    process.stdout.write("  Patched " + applied + "/" + mutations.length + "...");
+    process.stdout.write("  Patched " + applied + "/" + mutations.length + "...");
   }
-  process.stdout.write("
-");
+  process.stdout.write("\n");
   return applied;
 }
 async function main() {

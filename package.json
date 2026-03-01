@@ -6,7 +6,8 @@
     "dev": "next dev -p 3003",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "fix-dates": "node scripts/fix-dates.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.0.3",
