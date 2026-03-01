@@ -40,8 +40,13 @@ export const upcomingEventsQuery = groq`
 `;
 
 export const noticesByCategory = groq`
-  *[_type == "notice" && (category->slug.current == $slug || secondaryCategory->slug.current == $slug) && (!defined(endDate) || endDate > now())]
-  | order(publishDate desc)[0..47]{${noticeFields}}
+  *[_type == "notice" && (
+    category->slug.current == $slug ||
+    category->parent->slug.current == $slug ||
+    secondaryCategory->slug.current == $slug ||
+    secondaryCategory->parent->slug.current == $slug
+  ) && (!defined(endDate) || endDate > now())]
+  | order(publishDate desc)[0..199]{${noticeFields}}
 `;
 
 export const noticeBySlug = groq`

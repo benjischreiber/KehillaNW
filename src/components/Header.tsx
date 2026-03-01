@@ -44,7 +44,7 @@ export default function Header({ topNavCategories = [], hebrewDate }: HeaderProp
             alt="KehillaNW — Home of the NW London Kehilla"
             width={200}
             height={44}
-            className="h-10 w-auto brightness-0 invert"
+            className="h-10 w-auto"
             priority
           />
         </Link>

@@ -6,7 +6,6 @@ import { Category, categoryColourMap, categoryColourTintMap } from "@/lib/types"
 import { Grid3X3, Building2, Heart, ShoppingBag, GraduationCap, Users, Sparkles, ChefHat } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
-  "useful-info": <Building2 className="h-4 w-4" />,
   government: <Building2 className="h-4 w-4" />,
   support: <Heart className="h-4 w-4" />,
   shopping: <ShoppingBag className="h-4 w-4" />,
@@ -21,7 +20,7 @@ interface CategoryNavProps {
 }
 
 const defaultCategories: Category[] = [
-  { _id: "1", title: "Useful Info", slug: { current: "useful-info" }, colour: "blue", showInMainNav: true },
+  { _id: "1", title: "Government", slug: { current: "government" }, colour: "blue", showInMainNav: true },
   { _id: "2", title: "Support", slug: { current: "support" }, colour: "green", showInMainNav: true },
   { _id: "3", title: "Shopping", slug: { current: "shopping" }, colour: "purple", showInMainNav: true },
   { _id: "4", title: "Education", slug: { current: "education" }, colour: "orange", showInMainNav: true },

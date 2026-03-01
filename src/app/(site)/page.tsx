@@ -47,23 +47,13 @@ export default async function HomePage() {
               </h1>
               <p className="text-navy-200 text-sm mt-1.5">Notices, events &amp; useful info — updated daily</p>
             </div>
-            <div className="flex flex-wrap gap-2 sm:justify-end">
-              {[
-                { label: "Useful Info", slug: "useful-info", bg: "bg-blue-600" },
-                { label: "Support", slug: "support", bg: "bg-green-600" },
-                { label: "Shopping", slug: "shopping", bg: "bg-purple-600" },
-                { label: "Education", slug: "education", bg: "bg-orange-500" },
-                { label: "Community", slug: "community", bg: "bg-teal-600" },
-                { label: "Entertainment", slug: "entertainment", bg: "bg-rose-600" },
-              ].map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/category/${cat.slug}`}
-                  className={`${cat.bg} text-white text-xs font-bold px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap`}
-                >
-                  {cat.label}
-                </Link>
-              ))}
+            <div className="hidden sm:block">
+              <Link
+                href="/submit"
+                className="inline-block bg-gold-500 text-navy-900 text-sm font-bold px-5 py-2.5 rounded-full hover:bg-gold-400 transition-colors whitespace-nowrap"
+              >
+                Submit a Notice
+              </Link>
             </div>
           </div>
         </div>
