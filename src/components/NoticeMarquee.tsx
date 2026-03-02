@@ -16,7 +16,7 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
           100% { transform: translateX(-50%); }
         }
         .marquee-track {
-          animation: marquee-scroll 55s linear 3s infinite;
+          animation: marquee-scroll 90s linear 3s infinite;
         }
         .marquee-track:hover {
           animation-play-state: paused;

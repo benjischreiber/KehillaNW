@@ -6,7 +6,7 @@ import NoticeCard from "./NoticeCard";
 export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
   if (!notices.length) return null;
   const doubled = [...notices, ...notices];
-  const duration = Math.max(40, notices.length * 3); // ~3s per notice
+  const duration = Math.max(60, notices.length * 6); // ~6s per notice
 
   return (
     <>
