@@ -12,7 +12,6 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
 
   const doubled = [...notices, ...notices];
   const containerRef = useRef<HTMLDivElement>(null);
-  const pausedRef = useRef(false);
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
@@ -20,12 +19,10 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
     if (!container) return;
 
     const step = () => {
-      if (!pausedRef.current) {
-        container.scrollTop += SPEED;
-        // Seamless loop: when past the halfway point, step back by half
-        if (container.scrollTop >= container.scrollHeight / 2) {
-          container.scrollTop -= container.scrollHeight / 2;
-        }
+      container.scrollTop += SPEED;
+      // Seamless loop: when past the halfway point, step back by half
+      if (container.scrollTop >= container.scrollHeight / 2) {
+        container.scrollTop -= container.scrollHeight / 2;
       }
       rafRef.current = requestAnimationFrame(step);
     };
@@ -49,8 +46,6 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
         maskImage: "linear-gradient(to bottom, black 90%, transparent)",
         scrollbarWidth: "none",
       }}
-      onMouseEnter={() => { pausedRef.current = true; }}
-      onMouseLeave={() => { pausedRef.current = false; }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {doubled.map((notice, i) => (
