@@ -30,7 +30,9 @@ export const recentNoticesQuery = groq`
 `;
 
 export const upcomingEventsQuery = groq`
-  *[_type == "notice" && isEvent == true && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && isEvent == true
+    && (!defined(endDate) || endDate > now())
+    && (!defined(publishDate) || publishDate > now())]
   | order(publishDate asc)[0..7]{
     _id,
     title,
