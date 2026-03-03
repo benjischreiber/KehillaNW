@@ -49,15 +49,15 @@ export default async function NoticePage({ params }: Props) {
       <article className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {/* Hero image */}
         {notice.image && (
-          <div className="relative h-64 sm:h-80 w-full">
-            <Image
-              src={urlFor(notice.image).width(900).height(500).url()}
-              alt={notice.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+          <Image
+            src={urlFor(notice.image).width(900).url()}
+            alt={notice.title}
+            width={900}
+            height={600}
+            style={{ width: "100%", height: "auto" }}
+            className="block"
+            priority
+          />
         )}
 
         <div className="p-6 sm:p-10">
