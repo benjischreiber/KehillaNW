@@ -38,7 +38,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
               src={urlFor(notice.image).width(600).height(400).url()}
               alt={notice.title}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
             <div className={`h-full w-full ${placeholderBg} flex items-center justify-center opacity-90`}>
