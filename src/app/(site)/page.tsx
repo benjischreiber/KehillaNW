@@ -1,12 +1,10 @@
 import { client } from "@/sanity/lib/client";
 import {
   recentNoticesQuery,
-  upcomingEventsQuery,
   activeBannersQuery,
   mazalTovQuery,
 } from "@/lib/queries";
 import { Notice, Banner, MazalTov } from "@/lib/types";
-import UpcomingTicker from "@/components/UpcomingTicker";
 import NoticeMarquee from "@/components/NoticeMarquee";
 import MazalTovSection from "@/components/MazalTovSection";
 import Image from "next/image";
@@ -18,23 +16,19 @@ import MinyanMavenWidget from "@/components/MinyanMavenWidget";
 export const revalidate = 300;
 
 async function getData() {
-  const [recent, events, banners, mazalTov] = await Promise.all([
+  const [recent, banners, mazalTov] = await Promise.all([
     client.fetch<Notice[]>(recentNoticesQuery).catch(() => []),
-    client.fetch<Notice[]>(upcomingEventsQuery).catch(() => []),
     client.fetch<Banner[]>(activeBannersQuery).catch(() => []),
     client.fetch<MazalTov[]>(mazalTovQuery).catch(() => []),
   ]);
-  return { recent, events, banners, mazalTov };
+  return { recent, banners, mazalTov };
 }
 
 export default async function HomePage() {
-  const { recent, events, banners, mazalTov } = await getData();
+  const { recent, banners, mazalTov } = await getData();
 
   return (
     <>
-      {/* Upcoming events ticker */}
-      {events.length > 0 && <UpcomingTicker events={events} />}
-
       {/* Banner ads */}
       {banners.length > 0 && (
         <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100 py-4">
@@ -98,22 +92,28 @@ export default async function HomePage() {
         )}
 
         {/* Widget row below notices */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-12 items-stretch">
 
           {/* Mazal Tov */}
           {mazalTov.length > 0 && (
-            <MazalTovSection items={mazalTov} />
+            <div className="h-full">
+              <MazalTovSection items={mazalTov} />
+            </div>
           )}
 
           {/* Zmanim */}
-          <ZmanimWidget />
+          <div className="h-full">
+            <ZmanimWidget />
+          </div>
 
           {/* Minyan Times */}
-          <MinyanMavenWidget />
+          <div className="h-full">
+            <MinyanMavenWidget />
+          </div>
 
           {/* Submit + WhatsApp */}
-          <div className="space-y-4">
-            <div className="bg-gradient-to-br from-navy-900 to-navy-700 text-white rounded-2xl p-6 text-center">
+          <div className="flex flex-col gap-4 h-full">
+            <div className="bg-gradient-to-br from-navy-900 to-navy-700 text-white rounded-2xl p-6 text-center flex-1 flex flex-col justify-center">
               <h3 className="font-bold text-lg mb-2">Submit a Notice</h3>
               <p className="text-navy-200 text-sm mb-4 leading-relaxed">
                 Have something to share with the community?
@@ -125,7 +125,7 @@ export default async function HomePage() {
                 Submit a Notice
               </Link>
             </div>
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-5 text-center">
+            <div className="bg-green-50 border border-green-200 rounded-2xl p-5 text-center flex-1 flex flex-col justify-center">
               <p className="text-green-800 font-semibold text-sm mb-2">📱 Get updates on WhatsApp</p>
               <a
                 href="https://chat.whatsapp.com/D79ty6r6Lef5wGZdO30Pvj"

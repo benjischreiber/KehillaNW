@@ -11,7 +11,7 @@ export default function MazalTovSection({ items }: MazalTovSectionProps) {
   if (!items.length) return null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">
       <div className="bg-navy-900 px-5 py-3 flex items-center gap-2">
         <Gift className="h-5 w-5 text-gold-400" />
         <h2 className="font-bold text-white">Mazal Tov</h2>

@@ -112,7 +112,7 @@ export default function MinyanMavenWidget() {
   }, [loading, active]); // re-runs when tab changes too
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">
       {/* Header */}
       <div className="bg-navy-900 px-5 py-3 flex items-center justify-between">
         <h2 className="font-bold text-white text-sm">Minyan Times — GG &amp; Hendon</h2>
