@@ -17,6 +17,9 @@ export default function Footer() {
           <span>© {new Date().getFullYear()} KehillaNW.org</span>
         </div>
       </div>
+      <div className="border-t border-navy-600 py-2 text-center text-xs text-navy-300">
+        לעילוי נשמת ר׳ שלמה צבי בן ר׳ משה מרדכי גולקר ז׳ל &nbsp;·&nbsp; Mr Hershel Golker z&apos;l — ת.נ.צ.ב.ה
+      </div>
     </footer>
   );
 }
