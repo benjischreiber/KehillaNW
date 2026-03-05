@@ -2,8 +2,9 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-navy-900 text-white mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-12">
+    <footer className="relative text-white mt-16" style={{ backgroundImage: "url('/sky.jpeg')", backgroundSize: "cover", backgroundPosition: "center center" }}>
+      <div className="absolute inset-0 bg-navy-950/45 pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div className="md:col-span-2">
