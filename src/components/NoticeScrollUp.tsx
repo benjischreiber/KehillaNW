@@ -23,6 +23,10 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
     if (!wrapper || !track) return;
 
     const getHalf = () => track.offsetHeight / 2;
+    const getMinPos = () => {
+      const half = getHalf();
+      return Math.min(0, wrapper.offsetHeight - half);
+    };
 
     const step = () => {
       if (!pausedRef.current) {
@@ -39,11 +43,8 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
     const handleWheel = (e: WheelEvent) => {
       const delta = e.deltaMode === 0 ? e.deltaY : e.deltaY * 30;
       posRef.current -= delta;
-      const half = getHalf();
-      if (half > 0) {
-        posRef.current = posRef.current % half;
-        if (posRef.current > 0) posRef.current -= half;
-      }
+      const minPos = getMinPos();
+      posRef.current = Math.max(minPos, Math.min(0, posRef.current));
       track.style.transform = `translateY(${posRef.current}px)`;
 
       pausedRef.current = true;
