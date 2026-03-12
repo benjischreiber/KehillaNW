@@ -109,7 +109,7 @@ export default function MinyanMavenWidget() {
         container.scrollTop += elTop - containerTop;
       }
     }
-  }, [loading, active]); // re-runs when tab changes too
+  }, [loading, active, times]); // re-runs when tab changes or times update
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">

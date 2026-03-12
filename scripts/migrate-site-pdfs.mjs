@@ -1,7 +1,8 @@
 /**
  * Downloads PDFs from kehillanw.org admin and uploads to Sanity.
  * Skips outdated COVID-era and old advert PDFs.
- * Usage: SANITY_API_WRITE_TOKEN=... node scripts/migrate-site-pdfs.mjs
+ * Usage:
+ *   SANITY_API_WRITE_TOKEN=... SITE_ADMIN_USERNAME=... SITE_ADMIN_PASSWORD=... node scripts/migrate-site-pdfs.mjs
  */
 
 import { createClient } from "@sanity/client";
@@ -15,19 +16,28 @@ const SANITY = createClient({
 });
 
 const ADMIN = "https://kehillanw.org/admin";
+const SITE_ADMIN_USERNAME = process.env.SITE_ADMIN_USERNAME;
+const SITE_ADMIN_PASSWORD = process.env.SITE_ADMIN_PASSWORD;
+
+if (!SITE_ADMIN_USERNAME || !SITE_ADMIN_PASSWORD) {
+  throw new Error("Missing SITE_ADMIN_USERNAME or SITE_ADMIN_PASSWORD.");
+}
 
 async function login() {
+  const body = new URLSearchParams({
+    username: SITE_ADMIN_USERNAME,
+    password: SITE_ADMIN_PASSWORD,
+    doAction: "login",
+    return: "",
+    loginkeeping: "on",
+  });
   const res = await fetch(`${ADMIN}/login.php`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "username=admin&password=admin613&doAction=login&return=&loginkeeping=on",
+    body: body.toString(),
     redirect: "manual",
   });
   return (res.headers.getSetCookie?.() ?? []).map(c => c.split(";")[0]).join("; ");
-}
-
-function slugify(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 // Human-readable name from filename, and keywords to search Sanity

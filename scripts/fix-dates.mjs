@@ -1,15 +1,21 @@
 // fix-dates.mjs
-// Usage: node /Users/benji/kehillanw/scripts/fix-dates.mjs
+// Usage: SANITY_API_READ_TOKEN=... node scripts/fix-dates.mjs
 
 import { Buffer } from "node:buffer";
 
 const b64 = s => Buffer.from(s, "base64").toString("utf8");
 
-const PROJECT_ID = "sn3t47dp";
-const DATASET = "production";
-const TOKEN = "skpXEM2MDDlf8m0E4rI3WkUXqXGCy3ltbj8e0hPGmZaUkLnkggabu7ken0jWAetGDuvpwR6Y96hXF1NwmjasPZFw7YFewCWbdW0sFBBVdCTyq26vFfelLdA4ofpqNAZ2PEExwyTl2q6CVKh0C337Y8Ey0eWkYgMJR4mpTJfOArfQQKE6hrWw";
-const QUERY_URL = b64("aHR0cHM6Ly9zbjN0NDdkcC5hcGkuc2FuaXR5LmlvL3YyMDIxLTEwLTIxL2RhdGEvcXVlcnkvcHJvZHVjdGlvbg==");
-const MUTATE_URL = b64("aHR0cHM6Ly9zbjN0NDdkcC5hcGkuc2FuaXR5LmlvL3YyMDIxLTEwLTIxL2RhdGEvbXV0YXRlL3Byb2R1Y3Rpb24=");
+const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "sn3t47dp";
+const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+const TOKEN = process.env.SANITY_API_READ_TOKEN;
+
+if (!TOKEN) {
+  console.error("Missing SANITY_API_READ_TOKEN.");
+  process.exit(1);
+}
+
+const QUERY_URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}`;
+const MUTATE_URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/mutate/${DATASET}`;
 
 // Regex patterns encoded as base64
 const RE_URL_BLOCK = new RegExp(b64("PHVybD4oW1xzXFNdKj8pPFwvdXJsPg=="), "g");
