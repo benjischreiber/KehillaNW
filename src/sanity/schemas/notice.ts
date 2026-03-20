@@ -121,8 +121,8 @@ export const noticeSchema = defineType({
     defineField({
       name: "externalLink",
       title: "External Link",
-      type: "url",
-      description: "Optional link to an external website for more info",
+      type: "string",
+      description: "Optional website, email, phone number, or any other contact link",
     }),
     defineField({
       name: "featured",
