@@ -15,7 +15,7 @@ async function getNotices(q?: string, category?: string) {
   if (q) {
     return client.fetch<Notice[]>(
       groq`*[_type == "notice" && (title match $q || summary match $q) && (!defined(endDate) || endDate > now())]
-      | order(publishDate desc)[0..47]{
+      | order(publishDate desc, _updatedAt desc)[0..47]{
         _id, title, slug, summary, publishDate, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
         "categorySlug": category->slug.current,
@@ -27,7 +27,7 @@ async function getNotices(q?: string, category?: string) {
   if (category) {
     return client.fetch<Notice[]>(
       groq`*[_type == "notice" && (category->slug.current == $cat || secondaryCategory->slug.current == $cat) && (!defined(endDate) || endDate > now())]
-      | order(publishDate desc)[0..47]{
+      | order(publishDate desc, _updatedAt desc)[0..47]{
         _id, title, slug, summary, publishDate, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
         "categorySlug": category->slug.current,
