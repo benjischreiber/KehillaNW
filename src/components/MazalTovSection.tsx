@@ -27,7 +27,7 @@ export default function MazalTovSection({ items }: MazalTovSectionProps) {
         ))}
       </div>
       <div className="px-5 py-3 bg-gray-50 border-t border-gray-100">
-        <Link href="/notices?category=community" className="text-sm font-semibold text-navy-700 hover:text-gold-600 transition-colors">
+        <Link href="/mazal-tov" className="text-sm font-semibold text-navy-700 hover:text-gold-600 transition-colors">
           Read more →
         </Link>
       </div>

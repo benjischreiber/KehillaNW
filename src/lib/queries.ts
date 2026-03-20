@@ -77,6 +77,12 @@ export const mazalTovQuery = groq`
   }
 `;
 
+export const allMazalTovQuery = groq`
+  *[_type == "mazalTov" && visible == true] | order(publishDate desc)[0..199]{
+    _id, content, publishDate
+  }
+`;
+
 export const categoryWithParent = groq`
   *[_type == "category" && slug.current == $slug][0]{
     _id, title, colour,
