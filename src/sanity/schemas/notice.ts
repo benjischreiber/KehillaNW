@@ -23,6 +23,7 @@ export const noticeSchema = defineType({
       title: "Category",
       type: "reference",
       to: [{ type: "category" }],
+      weak: true,
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -30,6 +31,7 @@ export const noticeSchema = defineType({
       title: "Secondary Category (optional)",
       type: "reference",
       to: [{ type: "category" }],
+      weak: true,
     }),
     defineField({
       name: "publishDate",
