@@ -75,7 +75,12 @@ export const noticeSchema = defineType({
                 type: "object",
                 title: "Link",
                 fields: [
-                  { name: "href", type: "url", title: "URL" },
+                  {
+                    name: "href",
+                    type: "string",
+                    title: "URL or Email",
+                    description: "Accepts websites, email addresses, phone numbers, or any pasted link text",
+                  },
                   {
                     name: "blank",
                     type: "boolean",
