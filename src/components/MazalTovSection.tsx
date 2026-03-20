@@ -1,5 +1,5 @@
 import { MazalTov } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
+import { formatDate, splitAnnouncements } from "@/lib/utils";
 import { Gift } from "lucide-react";
 import Link from "next/link";
 
@@ -10,6 +10,16 @@ interface MazalTovSectionProps {
 export default function MazalTovSection({ items }: MazalTovSectionProps) {
   if (!items.length) return null;
 
+  const announcements = items
+    .flatMap((item) =>
+      splitAnnouncements(item.content).map((content, index) => ({
+        key: `${item._id}-${index}`,
+        content,
+        publishDate: item.publishDate,
+      }))
+    )
+    .slice(0, 8);
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full">
       <div className="bg-navy-900 px-5 py-3 flex items-center gap-2">
@@ -17,9 +27,9 @@ export default function MazalTovSection({ items }: MazalTovSectionProps) {
         <h2 className="font-bold text-white">Mazal Tov</h2>
       </div>
       <div className="divide-y divide-gray-50">
-        {items.slice(0, 8).map((item) => (
-          <div key={item._id} className="px-5 py-3">
-            <p className="text-sm text-gray-700 leading-relaxed">{item.content}</p>
+        {announcements.map((item) => (
+          <div key={item.key} className="px-5 py-3">
+            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{item.content}</p>
             {item.publishDate && (
               <p className="text-xs text-gray-400 mt-1">{formatDate(item.publishDate)}</p>
             )}

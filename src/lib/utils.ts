@@ -15,3 +15,10 @@ export function formatDateTime(dateString: string): string {
     return dateString;
   }
 }
+
+export function splitAnnouncements(content: string): string[] {
+  return content
+    .split(/\n\s*\n+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
