@@ -18,14 +18,8 @@ export default defineConfig({
             S.listItem()
               .title("Notices")
               .child(
-                S.documentList()
+                S.documentTypeList("notice")
                   .title("All Notices")
-                  .schemaType("notice")
-                  .filter('_type == "notice"')
-                  .menuItems([
-                    ...S.orderingMenuItemsForType("notice"),
-                    ...S.documentTypeList("notice").getMenuItems(),
-                  ])
                   .defaultOrdering([
                     { field: "publishDate", direction: "desc" },
                   ])
@@ -33,14 +27,8 @@ export default defineConfig({
             S.listItem()
               .title("Mazal Tov")
               .child(
-                S.documentList()
+                S.documentTypeList("mazalTov")
                   .title("Mazal Tov Announcements")
-                  .schemaType("mazalTov")
-                  .filter('_type == "mazalTov"')
-                  .menuItems([
-                    ...S.orderingMenuItemsForType("mazalTov"),
-                    ...S.documentTypeList("mazalTov").getMenuItems(),
-                  ])
                   .defaultOrdering([
                     { field: "publishDate", direction: "desc" },
                   ])
@@ -48,26 +36,14 @@ export default defineConfig({
             S.listItem()
               .title("Banners")
               .child(
-                S.documentList()
+                S.documentTypeList("banner")
                   .title("Banners")
-                  .schemaType("banner")
-                  .filter('_type == "banner"')
-                  .menuItems([
-                    ...S.orderingMenuItemsForType("banner"),
-                    ...S.documentTypeList("banner").getMenuItems(),
-                  ])
               ),
             S.listItem()
               .title("Categories")
               .child(
-                S.documentList()
+                S.documentTypeList("category")
                   .title("Categories")
-                  .schemaType("category")
-                  .filter('_type == "category"')
-                  .menuItems([
-                    ...S.orderingMenuItemsForType("category"),
-                    ...S.documentTypeList("category").getMenuItems(),
-                  ])
               ),
           ]),
     }),
