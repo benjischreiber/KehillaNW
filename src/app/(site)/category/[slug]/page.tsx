@@ -6,6 +6,7 @@ import NoticeScrollUp from "@/components/NoticeScrollUp";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { groq } from "next-sanity";
+import { notFound } from "next/navigation";
 
 export const revalidate = 300;
 
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const cat = await client
     .fetch<{ title: string }>(
-      groq`*[_type == "category" && slug.current == $slug][0]{ title }`,
+      groq`*[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{ title }`,
       { slug }
     )
     .catch(() => null);
@@ -56,6 +57,8 @@ export default async function CategoryPage({ params }: Props) {
   const subcategories = await client
     .fetch<SubCat[]>(subcategoriesForParent, { parentSlug: parentSlugForSubs })
     .catch(() => []);
+
+  if (!catInfo) notFound();
 
   const title = catInfo?.title || slug.replace(/-/g, " ");
   const colour = catInfo?.colour || catInfo?.parentColour || "blue";

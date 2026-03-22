@@ -55,6 +55,13 @@ export const categorySchema = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "visible",
+      title: "Visible on website",
+      type: "boolean",
+      description: "Turn this off to hide the category from the website without deleting it",
+      initialValue: true,
+    }),
+    defineField({
       name: "showInMainNav",
       title: "Show in main category bar",
       type: "boolean",

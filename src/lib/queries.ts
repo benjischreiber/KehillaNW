@@ -45,10 +45,10 @@ export const upcomingEventsQuery = groq`
 
 export const noticesByCategory = groq`
   *[_type == "notice" && (
-    category->slug.current == $slug ||
-    category->parent->slug.current == $slug ||
-    secondaryCategory->slug.current == $slug ||
-    secondaryCategory->parent->slug.current == $slug
+    (category->slug.current == $slug && (!defined(category->visible) || category->visible == true)) ||
+    (category->parent->slug.current == $slug && (!defined(category->parent->visible) || category->parent->visible == true)) ||
+    (secondaryCategory->slug.current == $slug && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true)) ||
+    (secondaryCategory->parent->slug.current == $slug && (!defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true))
   ) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
@@ -85,7 +85,7 @@ export const allMazalTovQuery = groq`
 `;
 
 export const categoryWithParent = groq`
-  *[_type == "category" && slug.current == $slug][0]{
+  *[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{
     _id, title, colour,
     "parentSlug": parent->slug.current,
     "parentTitle": parent->title,
@@ -94,19 +94,19 @@ export const categoryWithParent = groq`
 `;
 
 export const subcategoriesForParent = groq`
-  *[_type == "category" && parent->slug.current == $parentSlug] | order(order asc, title asc){
+  *[_type == "category" && parent->slug.current == $parentSlug && (!defined(visible) || visible == true)] | order(order asc, title asc){
     _id, title, colour, "slug": slug.current
   }
 `;
 
 export const topNavCategoriesQuery = groq`
-  *[_type == "category" && showInTopNav == true] | order(order asc){
+  *[_type == "category" && showInTopNav == true && (!defined(visible) || visible == true)] | order(order asc){
     _id, title, slug
   }
 `;
 
 export const mainNavCategoriesQuery = groq`
-  *[_type == "category" && showInMainNav == true] | order(order asc){
+  *[_type == "category" && showInMainNav == true && (!defined(visible) || visible == true)] | order(order asc){
     _id, title, slug, colour, icon
   }
 `;
