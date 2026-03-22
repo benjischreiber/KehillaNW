@@ -46,6 +46,13 @@ export const noticeSchema = defineType({
       description: "If set, the notice will be hidden after this date",
     }),
     defineField({
+      name: "visible",
+      title: "Visible on website",
+      type: "boolean",
+      description: "Turn this off to hide the notice without deleting it",
+      initialValue: true,
+    }),
+    defineField({
       name: "summary",
       title: "Summary",
       type: "text",

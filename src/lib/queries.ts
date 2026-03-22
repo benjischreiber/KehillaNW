@@ -20,17 +20,18 @@ export const noticeFields = groq`
 `;
 
 export const featuredNoticesQuery = groq`
-  *[_type == "notice" && featured == true && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && featured == true && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..7]{${noticeFields}}
 `;
 
 export const recentNoticesQuery = groq`
-  *[_type == "notice" && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{${noticeFields}}
 `;
 
 export const upcomingEventsQuery = groq`
   *[_type == "notice" && isEvent == true
+    && (!defined(visible) || visible == true)
     && (!defined(endDate) || endDate > now())
     && (!defined(publishDate) || publishDate > now())]
   | order(publishDate asc)[0..7]{
@@ -48,12 +49,12 @@ export const noticesByCategory = groq`
     category->parent->slug.current == $slug ||
     secondaryCategory->slug.current == $slug ||
     secondaryCategory->parent->slug.current == $slug
-  ) && (!defined(endDate) || endDate > now())]
+  ) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
 export const noticeBySlug = groq`
-  *[_type == "notice" && slug.current == $slug][0]{
+  *[_type == "notice" && slug.current == $slug && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())][0]{
     ${noticeFields}
     content,
     "pdfUrl": pdfFile.asset->url,
@@ -61,7 +62,7 @@ export const noticeBySlug = groq`
 `;
 
 export const allNoticesQuery = groq`
-  *[_type == "notice" && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
