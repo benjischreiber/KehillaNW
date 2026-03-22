@@ -6,6 +6,7 @@
 import { writeFileSync } from "fs";
 
 const BASE = "https://kehillanw.org";
+const MAX_CATEGORY_PAGES = 30;
 
 // Map URL path segment → category name used by import-notices.mjs
 const PATH_TO_CATEGORY = {
@@ -41,8 +42,34 @@ const PATH_TO_CATEGORY = {
   "business-directory": "Community",
 };
 
+const CATEGORY_SEGMENTS = [
+  "community", "education", "entertainment", "government", "support", "shopping",
+  "health", "travel", "sport", "useful-info", "shiurim", "shuls", "cholim",
+  "gemachim", "schools", "organisations", "business", "local", "halacha",
+  "purim", "events", "news", "jobs", "property", "food", "technology", "finance",
+  "legal", "charity", "youth", "seniors", "culture", "arts", "kosher", "simcha",
+  "announcements", "local-guidance", "local-shops", "shop-announcements",
+  "cateringtake-away", "kosher-outdoor-dining", "gifts", "outings-and-activities",
+  "kashrus", "wellbeing", "women", "parenting", "government-local", "recipes",
+  "online-events", "pesach", "childrens-education", "information-for-educators",
+  "beis-hamikdosh", "volunteering", "work-avenue", "business-directory",
+];
+
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
+}
+
+function normalizeArticlePath(rawPath) {
+  if (!rawPath) return null;
+  const trimmed = rawPath.trim();
+  if (!trimmed) return null;
+
+  let path = trimmed
+    .replace(/^https?:\/\/[^/]+\//i, "")
+    .replace(/^\//, "");
+
+  if (!path.startsWith("articles/") || !path.endsWith(".html")) return null;
+  return path;
 }
 
 async function fetchText(url) {
@@ -60,8 +87,87 @@ async function fetchText(url) {
 
 /** Extract article links from a listing page */
 function extractLinks(html) {
-  const matches = [...html.matchAll(/href="(articles\/[^"]+\.html)"/g)];
-  return [...new Set(matches.map(m => m[1]))];
+  const matches = [
+    ...html.matchAll(/href="([^"]*articles\/[^"]+\.html)"/gi),
+    ...html.matchAll(/<loc>([^<]*articles\/[^<]+\.html)<\/loc>/gi),
+  ];
+
+  return [...new Set(matches.map((m) => normalizeArticlePath(m[1])).filter(Boolean))];
+}
+
+async function collectLinksFromRootListings(allLinks) {
+  let page = 1;
+  let emptyCount = 0;
+
+  while (emptyCount < 2) {
+    const url = page === 1 ? `${BASE}/articles/` : `${BASE}/articles/?page=${page}`;
+    const html = await fetchText(url);
+    if (!html) {
+      emptyCount++;
+      page++;
+      continue;
+    }
+
+    const links = extractLinks(html);
+    if (links.length === 0) {
+      emptyCount++;
+    } else {
+      emptyCount = 0;
+      links.forEach((link) => allLinks.add(link));
+      process.stdout.write(`  Root page ${page}: ${links.length} links (total ${allLinks.size})\n`);
+    }
+
+    page++;
+    await sleep(200);
+  }
+}
+
+async function collectLinksFromCategoryListings(allLinks) {
+  for (const category of CATEGORY_SEGMENTS) {
+    let categoryFound = 0;
+
+    for (let page = 1; page <= MAX_CATEGORY_PAGES; page++) {
+      const url = page === 1
+        ? `${BASE}/articles/${category}/`
+        : `${BASE}/articles/${category}/?page=${page}`;
+
+      const html = await fetchText(url);
+      if (!html || !html.includes("/articles/")) break;
+
+      const before = allLinks.size;
+      extractLinks(html).forEach((link) => allLinks.add(link));
+      const added = allLinks.size - before;
+      categoryFound += added;
+
+      if (added === 0 && page > 1) break;
+      await sleep(150);
+    }
+
+    if (categoryFound > 0) {
+      process.stdout.write(`  Category ${category}: +${categoryFound} links (total ${allLinks.size})\n`);
+    }
+  }
+}
+
+async function collectLinksFromSitemaps(allLinks) {
+  const sitemapUrls = [
+    `${BASE}/sitemap.xml`,
+    `${BASE}/sitemap_index.xml`,
+    `${BASE}/sitemap.php`,
+  ];
+
+  for (const sitemapUrl of sitemapUrls) {
+    const html = await fetchText(sitemapUrl);
+    if (!html) continue;
+
+    const before = allLinks.size;
+    extractLinks(html).forEach((link) => allLinks.add(link));
+    const added = allLinks.size - before;
+
+    if (added > 0) {
+      process.stdout.write(`  Sitemap ${sitemapUrl}: +${added} links (total ${allLinks.size})\n`);
+    }
+  }
 }
 
 /** Parse a single article page */
@@ -115,27 +221,11 @@ function parseArticle(html, path) {
 }
 
 async function main() {
-  console.log("Phase 1: Collecting article URLs from listing pages...");
+  console.log("Phase 1: Collecting article URLs...");
   const allLinks = new Set();
-  let page = 1;
-  let emptyCount = 0;
-
-  while (emptyCount < 2) {
-    const url = page === 1 ? `${BASE}/articles/` : `${BASE}/articles/?page=${page}`;
-    const html = await fetchText(url);
-    if (!html) { emptyCount++; page++; continue; }
-
-    const links = extractLinks(html);
-    if (links.length === 0) {
-      emptyCount++;
-    } else {
-      emptyCount = 0;
-      links.forEach(l => allLinks.add(l));
-      process.stdout.write(`  Page ${page}: ${links.length} links (total ${allLinks.size})\n`);
-    }
-    page++;
-    await sleep(200);
-  }
+  await collectLinksFromSitemaps(allLinks);
+  await collectLinksFromRootListings(allLinks);
+  await collectLinksFromCategoryListings(allLinks);
 
   console.log(`\nFound ${allLinks.size} article URLs. Phase 2: Fetching each article...\n`);
   const notices = [];
