@@ -41,8 +41,11 @@ export default function FeaturedCarousel({ notices }: FeaturedCarouselProps) {
   if (!notices.length) return null;
 
   const notice = notices[current];
-  const href = notice.externalLink || `/notices/${notice.slug?.current}`;
-  const isExternal = !!notice.externalLink;
+  const hasInternalPage = !!notice.slug?.current;
+  const href = hasInternalPage
+    ? `/notices/${notice.slug.current}`
+    : notice.externalLink || "#";
+  const isExternal = !hasInternalPage && !!notice.externalLink;
   const solidClass =
     notice.categoryColour && categoryColourMap[notice.categoryColour]
       ? categoryColourMap[notice.categoryColour]

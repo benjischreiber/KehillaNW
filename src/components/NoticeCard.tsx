@@ -9,10 +9,11 @@ interface NoticeCardProps {
 }
 
 export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
-  const href = notice.externalLink
-    ? notice.externalLink
-    : `/notices/${notice.slug?.current}`;
-  const isExternal = !!notice.externalLink;
+  const hasInternalPage = !!notice.slug?.current;
+  const href = hasInternalPage
+    ? `/notices/${notice.slug.current}`
+    : notice.externalLink || "#";
+  const isExternal = !hasInternalPage && !!notice.externalLink;
 
   const badgeClass =
     notice.categoryColour && categoryColourTextMap[notice.categoryColour]
