@@ -15,9 +15,10 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
   const rafRef = useRef<number>(0);
   const pausedRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const shouldLoop = notices.length > 6;
 
   useEffect(() => {
-    if (!notices.length) return;
+    if (!notices.length || !shouldLoop) return;
     const wrapper = wrapperRef.current;
     const track = trackRef.current;
     if (!wrapper || !track) return;
@@ -66,24 +67,24 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
       if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
       wrapper.removeEventListener("wheel", handleWheel);
     };
-  }, [notices.length]);
+  }, [notices.length, shouldLoop]);
 
   if (!notices.length) return null;
 
-  const doubled = [...notices, ...notices];
+  const items = shouldLoop ? [...notices, ...notices] : notices;
 
   return (
     <div
       ref={wrapperRef}
       style={{
         height: "72vh",
-        overflow: "hidden",
+        overflowY: shouldLoop ? "hidden" : "auto",
         maskImage: "linear-gradient(to bottom, black 90%, transparent)",
       }}
     >
       <div ref={trackRef}>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {doubled.map((notice, i) => (
+          {items.map((notice, i) => (
             <NoticeCard key={`${notice._id}-${i}`} notice={notice} size="lg" />
           ))}
         </div>
