@@ -36,10 +36,13 @@ const PATH_TO_CATEGORY = {
   "women": "Community",
   "gemachim": "Support",
   "government": "Useful Info",
+  "medical-advice": "Useful Info",
   "recipes": "Shopping",
   "travel": "Entertainment",
   "work-avenue": "Community",
   "business-directory": "Community",
+  "financial-advice": "Support",
+  "yom-hashoah": "Education",
 };
 
 const CATEGORY_SEGMENTS = [
@@ -53,6 +56,7 @@ const CATEGORY_SEGMENTS = [
   "kashrus", "wellbeing", "women", "parenting", "government-local", "recipes",
   "online-events", "pesach", "childrens-education", "information-for-educators",
   "beis-hamikdosh", "volunteering", "work-avenue", "business-directory",
+  "medical-advice", "financial-advice", "yom-hashoah",
 ];
 
 function sleep(ms) {
@@ -70,6 +74,20 @@ function normalizeArticlePath(rawPath) {
 
   if (!path.startsWith("articles/") || !path.endsWith(".html")) return null;
   return path;
+}
+
+function decodeHtml(text) {
+  return text
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'");
+}
+
+function stripHtml(text) {
+  return decodeHtml(text).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
 async function fetchText(url) {
@@ -93,6 +111,40 @@ function extractLinks(html) {
   ];
 
   return [...new Set(matches.map((m) => normalizeArticlePath(m[1])).filter(Boolean))];
+}
+
+function extractArticleBody(html) {
+  const bodyMatch =
+    html.match(/<div[^>]*class="[^"]*dlt-title-item[^"]*"[^>]*>[\s\S]*?<div>\s*<\/div>\s*<p>([\s\S]*?)<\/p>/i) ||
+    html.match(/<div[^>]*class="[^"]*(?:article[-_]?body|post[-_]?content|entry[-_]?content)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+
+  return bodyMatch ? bodyMatch[1].trim() : "";
+}
+
+function extractArticleImage(html) {
+  const articleImage =
+    html.match(/<img[^>]*src="([^"]*\/img\/articles\/[^"]+\.(?:jpe?g|png|webp|gif|JPG|JPEG|PNG))"[^>]*>/i) ||
+    html.match(/<img[^>]*src="([^"]*\/uploads\/[^"]+\.(?:jpe?g|png|webp|gif|JPG|JPEG|PNG))"[^>]*>/i);
+
+  if (!articleImage) return null;
+  return articleImage[1].startsWith("http")
+    ? articleImage[1]
+    : `${BASE}/${articleImage[1].replace(/^\//, "")}`;
+}
+
+function extractExternalLink(contentHtml) {
+  if (!contentHtml) return null;
+
+  const matches = [...contentHtml.matchAll(/href="(https?:\/\/[^"]+)"/gi)]
+    .map((m) => m[1])
+    .filter((href) => {
+      const lower = href.toLowerCase();
+      return !lower.includes("chat.whatsapp.com")
+        && !lower.includes("posts@kehilla")
+        && !lower.includes("kehillanw.org");
+    });
+
+  return matches[0] || null;
 }
 
 async function collectLinksFromRootListings(allLinks) {
@@ -191,27 +243,22 @@ function parseArticle(html, path) {
   }
 
   // Summary — first <p> in the article body
-  const summaryMatch = html.match(/<div[^>]*class="[^"]*article[^"]*body[^"]*"[^>]*>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i)
-    || html.match(/<main[^>]*>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
-  const summary = summaryMatch
-    ? summaryMatch[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ").trim().slice(0, 200)
-    : "";
-
   // Content HTML — try to grab the article body
-  const bodyMatch = html.match(/<div[^>]*class="[^"]*(?:article[-_]?body|post[-_]?content|entry[-_]?content)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-  const contentHtml = bodyMatch ? bodyMatch[1] : "";
+  const contentHtml = extractArticleBody(html);
 
-  // External link — any prominent external link
-  const extMatch = html.match(/href="(https?:\/\/(?!kehillanw\.org)[^"]+)"[^>]*>(?:(?!<).){0,50}(?:visit|click|here|more|info|buy|book|register|join|download)/i);
-  const externalLink = extMatch ? extMatch[1] : null;
+  // Summary — first real paragraph/heading in article body
+  const summaryMatch = contentHtml.match(/<(?:p|h3)[^>]*>([\s\S]*?)<\/(?:p|h3)>/i);
+  const summary = summaryMatch ? stripHtml(summaryMatch[1]).slice(0, 200) : "";
+
+  // External link — prefer article content links, not generic footer links
+  const externalLink = extractExternalLink(contentHtml);
 
   // PDF link
   const pdfMatch = html.match(/href="([^"]+\.pdf)"/i);
   const pdfUrl = pdfMatch ? (pdfMatch[1].startsWith("http") ? pdfMatch[1] : `${BASE}/${pdfMatch[1].replace(/^\//, "")}`) : null;
 
   // Image
-  const imgMatch = html.match(/<img[^>]*src="([^"]*(?:uploads|images|img)[^"]*(?:jpe?g|png|webp))"[^>]*/i);
-  const imageUrl = imgMatch ? (imgMatch[1].startsWith("http") ? imgMatch[1] : `${BASE}/${imgMatch[1].replace(/^\//, "")}`) : null;
+  const imageUrl = extractArticleImage(html);
 
   // Category from path
   const segment = path.split("/")[1] || "";
