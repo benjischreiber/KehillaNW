@@ -21,12 +21,12 @@ export const noticeFields = groq`
 
 export const featuredNoticesQuery = groq`
   *[_type == "notice" && featured == true && (!defined(endDate) || endDate > now())]
-  | order(coalesce(publishDate, _updatedAt) desc, _updatedAt desc)[0..7]{${noticeFields}}
+  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..7]{${noticeFields}}
 `;
 
 export const recentNoticesQuery = groq`
   *[_type == "notice" && (!defined(endDate) || endDate > now())]
-  | order(coalesce(publishDate, _updatedAt) desc, _updatedAt desc)[0..47]{${noticeFields}}
+  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{${noticeFields}}
 `;
 
 export const upcomingEventsQuery = groq`
@@ -49,7 +49,7 @@ export const noticesByCategory = groq`
     secondaryCategory->slug.current == $slug ||
     secondaryCategory->parent->slug.current == $slug
   ) && (!defined(endDate) || endDate > now())]
-  | order(coalesce(publishDate, _updatedAt) desc, _updatedAt desc)[0..599]{${noticeFields}}
+  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
 export const noticeBySlug = groq`
@@ -62,7 +62,7 @@ export const noticeBySlug = groq`
 
 export const allNoticesQuery = groq`
   *[_type == "notice" && (!defined(endDate) || endDate > now())]
-  | order(coalesce(publishDate, _updatedAt) desc, _updatedAt desc)[0..599]{${noticeFields}}
+  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
 export const activeBannersQuery = groq`

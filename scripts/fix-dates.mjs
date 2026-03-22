@@ -1,5 +1,5 @@
 // fix-dates.mjs
-// Usage: SANITY_API_READ_TOKEN=... node scripts/fix-dates.mjs
+// Usage: SANITY_API_WRITE_TOKEN=... node scripts/fix-dates.mjs
 
 import { Buffer } from "node:buffer";
 
@@ -7,10 +7,10 @@ const b64 = s => Buffer.from(s, "base64").toString("utf8");
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "sn3t47dp";
 const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-const TOKEN = process.env.SANITY_API_READ_TOKEN;
+const TOKEN = process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_READ_TOKEN;
 
 if (!TOKEN) {
-  console.error("Missing SANITY_API_READ_TOKEN.");
+  console.error("Missing SANITY_API_WRITE_TOKEN.");
   process.exit(1);
 }
 
@@ -92,6 +92,23 @@ function parseCategoryHtml(html) {
   }
   return map;
 }
+
+function mergeDateWithExistingTime(currentPublishDate, newDate) {
+  if (!newDate) return null;
+
+  const existing = currentPublishDate ? new Date(currentPublishDate) : null;
+  if (existing && !Number.isNaN(existing.getTime())) {
+    const hh = String(existing.getUTCHours()).padStart(2, "0");
+    const mm = String(existing.getUTCMinutes()).padStart(2, "0");
+    const ss = String(existing.getUTCSeconds()).padStart(2, "0");
+    const ms = String(existing.getUTCMilliseconds()).padStart(3, "0");
+    return `${newDate}T${hh}:${mm}:${ss}.${ms}Z`;
+  }
+
+  // Fallback to midday when there is no existing valid time component.
+  return `${newDate}T12:00:00.000Z`;
+}
+
 const CATEGORIES = [
   "community","education","entertainment","government","support","shopping",
   "health","travel","sport","useful-info","shiurim","shuls","cholim",
@@ -222,8 +239,9 @@ async function main() {
     const { _id, slug, publishDate } = notice;
     if (!slug) continue;
     const newDate = slugDate.get(slug);
-    if (newDate && newDate !== publishDate) {
-      mutations.push({ patch: { id: _id, set: { publishDate: newDate } } });
+    const mergedPublishDate = mergeDateWithExistingTime(publishDate, newDate);
+    if (mergedPublishDate && mergedPublishDate !== publishDate) {
+      mutations.push({ patch: { id: _id, set: { publishDate: mergedPublishDate } } });
     } else if (!newDate) {
       unmatched.push(slug);
     }
