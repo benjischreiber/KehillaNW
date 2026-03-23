@@ -30,6 +30,17 @@ function slugify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function decodeHtml(text) {
+  return text
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&ndash;/g, "–")
+    .replace(/&pound;/g, "£")
+    .replace(/&#39;/g, "'");
+}
+
 // Convert HTML content to simple portable text blocks
 function htmlToPortableText(html) {
   if (!html) return [];
@@ -40,23 +51,27 @@ function htmlToPortableText(html) {
   // Extract text paragraphs and headings
   const blocks = [];
 
-  // Replace <h3> with heading blocks
-  const h3Matches = [...html.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/gi)];
+  // Replace heading tags with heading blocks
+  const headingMatches = [
+    ...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi),
+    ...html.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/gi),
+    ...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/gi),
+  ];
   const pMatches = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
 
-  const allMatches = [...h3Matches.map(m => ({ type: "h3", text: m[1], index: m.index })),
+  const allMatches = [...headingMatches.map(m => ({ type: "heading", text: m[1], index: m.index })),
                       ...pMatches.map(m => ({ type: "p", text: m[1], index: m.index }))]
     .sort((a, b) => a.index - b.index);
 
   for (const match of allMatches) {
     // Strip remaining HTML tags
-    const text = match.text.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&ndash;/g, "–").replace(/&pound;/g, "£").trim();
+    const text = decodeHtml(match.text).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     if (!text) continue;
 
     blocks.push({
       _type: "block",
       _key: Math.random().toString(36).slice(2),
-      style: match.type === "h3" ? "h3" : "normal",
+      style: match.type === "heading" ? "h3" : "normal",
       children: [{ _type: "span", _key: Math.random().toString(36).slice(2), text, marks: [] }],
       markDefs: [],
     });
@@ -64,7 +79,7 @@ function htmlToPortableText(html) {
 
   // If no structured content found, try to get plain text
   if (blocks.length === 0) {
-    const plainText = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const plainText = decodeHtml(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     if (plainText) {
       blocks.push({
         _type: "block",
@@ -156,21 +171,39 @@ async function main() {
     const slug = slugify(notice.title);
 
     const content = htmlToPortableText(notice.contentHtml || "");
+    const noticeId = `notice-${slug}`;
+    const existing = await client.fetch(
+      `*[_id == $id][0]{ _id, publishDate, image, pdfFile, secondaryCategory, visible }`,
+      { id: noticeId }
+    ).catch(() => null);
 
-    const doc = {
-      _type: "notice",
-      _id: `notice-${slug}`,
+    const baseFields = {
       title: notice.title.trim(),
       slug: { _type: "slug", current: slug },
       summary: notice.summary?.trim() || "",
-      publishDate: notice.date ? new Date(notice.date).toISOString() : new Date().toISOString(),
       category: { _type: "reference", _ref: catId },
       featured: ["SOFT PLAY Hatfield 4 March", "Purim in NW London and beyond @KNW", "FIG - Filling in the Gaps"].includes(notice.title.trim()),
       isEvent: ["SOFT PLAY Hatfield 4 March", "Post sem Purim event", "Megilla Reading on the hour", "Pre Purim Hashem, Mummy and Me", "Parshas Zochor Readings"].includes(notice.title.trim()),
       content,
+      externalLink: notice.externalLink || undefined,
+      visible: existing?.visible ?? true,
     };
 
-    await client.createOrReplace(doc);
+    if (existing) {
+      const patch = {
+        ...baseFields,
+        publishDate: existing.publishDate || (notice.date ? new Date(notice.date).toISOString() : undefined),
+      };
+
+      await client.patch(noticeId).set(patch).commit();
+    } else {
+      await client.create({
+        _type: "notice",
+        _id: noticeId,
+        ...baseFields,
+        publishDate: notice.date ? new Date(notice.date).toISOString() : new Date().toISOString(),
+      });
+    }
     console.log(`  ✓ Notice: ${notice.title}`);
   }
 

@@ -90,6 +90,10 @@ function stripHtml(text) {
   return decodeHtml(text).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 async function fetchText(url) {
   try {
     const res = await fetch(url, {
@@ -114,11 +118,43 @@ function extractLinks(html) {
 }
 
 function extractArticleBody(html) {
-  const bodyMatch =
+  const mainColumnMatch = html.match(
+    /<div[^>]*class="[^"]*col-md-9[^"]*col-sm-8[^"]*col-xs-12[^"]*"[^>]*>([\s\S]*?)<div[^>]*class="[^"]*col-md-3[^"]*col-sm-4[^"]*col-xs-12[^"]*"/i
+  );
+  const legacyBodyMatch =
     html.match(/<div[^>]*class="[^"]*dlt-title-item[^"]*"[^>]*>[\s\S]*?<div>\s*<\/div>\s*<p>([\s\S]*?)<\/p>/i) ||
     html.match(/<div[^>]*class="[^"]*(?:article[-_]?body|post[-_]?content|entry[-_]?content)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
 
-  return bodyMatch ? bodyMatch[1].trim() : "";
+  let source = mainColumnMatch ? mainColumnMatch[1] : legacyBodyMatch?.[1] || "";
+  if (!source) return "";
+
+  source = source
+    .replace(/<div[^>]*class="[^"]*(?:slider2|detail-gallery|detail-gallery-preview|dlt-title-item|dlt-spons-item|dlt-com-lt-comment-user|detail-amenities)[^"]*"[^>]*>[\s\S]*?<\/div>/gi, " ")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ");
+
+  const titleMatch = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i) || html.match(/<title>[^|]+\|\s*([^<]+)<\/title>/i);
+  const titleText = titleMatch ? stripHtml(titleMatch[1]) : "";
+
+  const blocks = [...source.matchAll(/<(h2|h3|h4|p|ul|ol)[^>]*>[\s\S]*?<\/\1>/gi)]
+    .map((match) => match[0].trim())
+    .filter((block, index) => {
+      const text = stripHtml(block);
+      if (!text) return false;
+      if (index === 0 && titleText && text === titleText) return false;
+      return true;
+    });
+
+  if (blocks.length > 0) {
+    return blocks.join("\n");
+  }
+
+  if (titleText) {
+    source = source.replace(new RegExp(`<h3[^>]*>${escapeRegExp(titleText)}<\\/h3>`, "i"), " ");
+  }
+
+  return source.trim();
 }
 
 function extractArticleImage(html) {

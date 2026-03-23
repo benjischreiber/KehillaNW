@@ -22,6 +22,8 @@ const RE_URL_BLOCK = new RegExp(b64("PHVybD4oW1xzXFNdKj8pPFwvdXJsPg=="), "g");
 const RE_LOC = new RegExp(b64("PGxvYz4oLio/KTxcL2xvYz4="));
 const RE_LASTMOD = new RegExp(b64("PGxhc3Rtb2Q+KC4qPyk8XC9sYXN0bW9kPg=="));
 const RE_HREF = new RegExp(b64("aHJlZj0iKFwvYXJ0aWNsZXNcL1teIl0rXC5odG1sKSI="), "g");
+const RE_LISTING_ENTRY = /<div[^>]*class="[^"]*feature-box-text[^"]*"[^>]*>[\s\S]*?<h3>\s*<a href="(articles\/[^"]+\.html)">[\s\S]*?<\/a>\s*<\/h3>[\s\S]*?<p>([^<]+)<\/p>/gi;
+const RE_MONTH_YEAR = /([A-Za-z]+),\s*(20\d{2})/i;
 async function fetchSitemap() {
   const candidates = [
     "https://kehillanw.org/sitemap.xml",
@@ -79,6 +81,15 @@ function extractDate(text) {
   const sep = String.fromCharCode(45);
   return yr + sep + mo + sep + dy;
 }
+
+function parseMonthYear(text) {
+  const match = text.match(RE_MONTH_YEAR);
+  if (!match) return null;
+  const month = MONTHS[match[1].toLowerCase()];
+  if (!month) return null;
+  return { year: match[2], month };
+}
+
 function parseCategoryHtml(html) {
   const map = new Map();
   RE_HREF.lastIndex = 0;
@@ -91,6 +102,30 @@ function parseCategoryHtml(html) {
     if (dt && !map.has(slug)) map.set(slug, dt);
   }
   return map;
+}
+
+function parseRootListingHtml(html, pageOffset) {
+  const entries = [];
+  RE_LISTING_ENTRY.lastIndex = 0;
+  let entryMatch;
+  let indexOnPage = 0;
+
+  while ((entryMatch = RE_LISTING_ENTRY.exec(html)) !== null) {
+    const slug = entryMatch[1].split("/").pop().replace(/\.html$/, "");
+    const monthYear = parseMonthYear(entryMatch[2]);
+    if (!monthYear) continue;
+    if (!slug) continue;
+
+    entries.push({
+      slug,
+      year: monthYear.year,
+      month: monthYear.month,
+      order: pageOffset + indexOnPage,
+    });
+    indexOnPage++;
+  }
+
+  return entries;
 }
 
 function mergeDateWithExistingTime(currentPublishDate, newDate) {
@@ -107,6 +142,17 @@ function mergeDateWithExistingTime(currentPublishDate, newDate) {
 
   // Fallback to midday when there is no existing valid time component.
   return `${newDate}T12:00:00.000Z`;
+}
+
+function buildOrderedPublishDate(entry, indexWithinMonth) {
+  const year = Number(entry.year);
+  const monthIndex = Number(entry.month) - 1;
+  const day = 1;
+  const secondsFromStart = Math.max(0, 86399 - indexWithinMonth);
+  const hh = String(Math.floor(secondsFromStart / 3600)).padStart(2, "0");
+  const mm = String(Math.floor((secondsFromStart % 3600) / 60)).padStart(2, "0");
+  const ss = String(secondsFromStart % 60).padStart(2, "0");
+  return `${year}-${entry.month}-${String(day).padStart(2, "0")}T${hh}:${mm}:${ss}.000Z`;
 }
 
 const CATEGORIES = [
@@ -160,6 +206,30 @@ async function scrapeByCategories() {
   }
   return map;
 }
+
+async function scrapeRootListingOrder() {
+  const entries = [];
+
+  for (let page = 1; page <= 80; page++) {
+    const url = page === 1
+      ? "https://kehillanw.org/articles/"
+      : "https://kehillanw.org/articles/?page=" + page;
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (!r.ok) break;
+      const html = await r.text();
+      const pageEntries = parseRootListingHtml(html, entries.length);
+      if (pageEntries.length === 0) break;
+      entries.push(...pageEntries);
+      console.log("  root page " + page + ": " + pageEntries.length + " entries");
+    } catch (e) {
+      console.log("  root page " + page + ": " + e.message);
+      break;
+    }
+  }
+
+  return entries;
+}
 async function fetchSanityNotices() {
   const notices = [];
   const sq = String.fromCharCode(39);
@@ -201,6 +271,11 @@ async function applyMutations(mutations) {
 async function main() {
   console.log("=== KehillaNW Date Fix ===");
   let slugDate = new Map();
+  let orderedEntries = [];
+
+  console.log("STEP 0: Scraping root listing order...");
+  orderedEntries = await scrapeRootListingOrder();
+  console.log("  " + orderedEntries.length + " listing entries found");
 
   console.log("STEP 1: Trying sitemap...");
   const xml = await fetchSitemap();
@@ -216,16 +291,22 @@ async function main() {
     console.log("Total: " + slugDate.size + " slug->date pairs");
   }
 
-  if (slugDate.size === 0) {
+  if (slugDate.size === 0 && orderedEntries.length === 0) {
     console.error("ERROR: No dates retrieved. Aborting.");
     process.exit(1);
   }
 
   console.log("Sample:");
-  let sc = 0;
-  for (const [s, dt] of slugDate) {
-    if (sc++ >= 6) break;
-    console.log("  " + s + ": " + dt);
+  if (orderedEntries.length > 0) {
+    orderedEntries.slice(0, 6).forEach((entry) => {
+      console.log("  " + entry.slug + ": " + entry.month + "/" + entry.year + " (#" + entry.order + ")");
+    });
+  } else {
+    let sc = 0;
+    for (const [s, dt] of slugDate) {
+      if (sc++ >= 6) break;
+      console.log("  " + s + ": " + dt);
+    }
   }
 
   console.log("STEP 2: Fetching Sanity notices...");
@@ -235,14 +316,25 @@ async function main() {
   console.log("STEP 3: Matching slugs...");
   const mutations = [];
   const unmatched = [];
+  const monthCounters = new Map();
+  const orderedEntryMap = new Map(orderedEntries.map((entry) => [entry.slug, entry]));
   for (const notice of notices) {
     const { _id, slug, publishDate } = notice;
     if (!slug) continue;
-    const newDate = slugDate.get(slug);
-    const mergedPublishDate = mergeDateWithExistingTime(publishDate, newDate);
+    const orderedEntry = orderedEntryMap.get(slug);
+    let mergedPublishDate = null;
+    if (orderedEntry) {
+      const monthKey = `${orderedEntry.year}-${orderedEntry.month}`;
+      const indexWithinMonth = monthCounters.get(monthKey) || 0;
+      monthCounters.set(monthKey, indexWithinMonth + 1);
+      mergedPublishDate = buildOrderedPublishDate(orderedEntry, indexWithinMonth);
+    } else {
+      const newDate = slugDate.get(slug);
+      mergedPublishDate = mergeDateWithExistingTime(publishDate, newDate);
+    }
     if (mergedPublishDate && mergedPublishDate !== publishDate) {
       mutations.push({ patch: { id: _id, set: { publishDate: mergedPublishDate } } });
-    } else if (!newDate) {
+    } else if (!orderedEntry && !slugDate.get(slug)) {
       unmatched.push(slug);
     }
   }
@@ -267,7 +359,8 @@ async function main() {
 
   console.log("=== SUMMARY ===");
   console.log("  Total notices: " + notices.length);
-  console.log("  Dates found:   " + slugDate.size);
+  console.log("  Listing dates: " + orderedEntries.length);
+  console.log("  Exact dates:   " + slugDate.size);
   console.log("  Updated:       " + applied);
   console.log("  Unmatched:     " + unmatched.length);
 }

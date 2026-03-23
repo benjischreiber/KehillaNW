@@ -81,6 +81,9 @@ const PATH_TO_CAT_ID = {
   shopping:                   "category-shopping",
   education:                  "category-education",
   government:                 "category-government",
+  "medical-advice":           "category-government",
+  "financial-advice":         "category-support",
+  "yom-hashoah":              "category-education",
   // Subcategories
   announcements:              "category-announcements",
   "local-guidance":           "category-local-guidance",
