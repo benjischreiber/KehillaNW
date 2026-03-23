@@ -37,11 +37,11 @@ function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 // { sanityId, slug, title, parentId, colour }
 const SUBCATEGORIES = [
   // Government / Useful Info
-  { sanityId: "category-announcements",           slug: "announcements",            title: "Announcements",            parentId: "category-government", colour: "blue" },
+  { sanityId: "category-announcements",           slug: "announcements",            title: "Announcements",            parentId: null, colour: "blue" },
   { sanityId: "category-local-guidance",          slug: "local-guidance",           title: "Local Guidance",           parentId: "category-government", colour: "blue" },
-  { sanityId: "category-halacha",                 slug: "halacha",                  title: "Halacha",                  parentId: "category-government", colour: "blue" },
-  { sanityId: "category-kashrus",                 slug: "kashrus",                  title: "Kashrus",                  parentId: "category-government", colour: "blue" },
+  { sanityId: "category-halacha",                 slug: "halacha",                  title: "Halacha",                  parentId: "category-support", colour: "green" },
   // Shopping
+  { sanityId: "category-kashrus",                 slug: "kashrus",                  title: "Kashrus",                  parentId: "category-shopping",   colour: "purple" },
   { sanityId: "category-local-shops",             slug: "local-shops",              title: "Local Shops",              parentId: "category-shopping",   colour: "purple" },
   { sanityId: "category-shop-announcements",      slug: "shop-announcements",       title: "Shop Announcements",       parentId: "category-shopping",   colour: "purple" },
   { sanityId: "category-cateringtake-away",       slug: "cateringtake-away",        title: "Catering & Take-Away",     parentId: "category-shopping",   colour: "purple" },
@@ -167,8 +167,10 @@ async function main() {
       showInMainNav: false,
       showInTopNav: false,
       order: 99,
-      parent: { _type: "reference", _ref: sub.parentId },
     };
+    if (sub.parentId) {
+      doc.parent = { _type: "reference", _ref: sub.parentId };
+    }
     await client.createOrReplace(doc);
     console.log(`  ✓ ${sub.title} (${sub.slug}) → ${sub.parentId}`);
   }
