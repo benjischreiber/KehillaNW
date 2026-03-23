@@ -100,12 +100,12 @@ export default async function CategoryPage({ params }: Props) {
       </div>
 
       {/* Subcategory pills */}
-      {subcategories.length > 0 && (
+      {!isSubcategory && subcategories.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-8">
           <Link
             href={allHref}
             className={`px-4 py-1.5 rounded-full text-sm font-bold border transition-all ${
-              !isSubcategory || slug === parentSlugForSubs
+              slug === parentSlugForSubs
                 ? `${solidClass} text-white border-transparent`
                 : categoryColourTintMap[colour] || "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
             }`}
