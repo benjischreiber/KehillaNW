@@ -55,13 +55,6 @@ export const categorySchema = defineType({
       description: "Optional emoji e.g. 🏛️ 🛒 📚",
     }),
     defineField({
-      name: "showInTopNav",
-      title: "Show in top navigation",
-      type: "boolean",
-      description: "Shuls, Schools, Shiurim etc.",
-      initialValue: false,
-    }),
-    defineField({
       name: "showInMainNav",
       title: "Show in main category bar",
       type: "boolean",
