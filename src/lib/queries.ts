@@ -7,6 +7,7 @@ export const noticeFields = groq`
   slug,
   summary,
   publishDate,
+  eventDate,
   endDate,
   featured,
   isEvent,
@@ -41,10 +42,11 @@ export const recentNoticesQuery = groq`
 export const upcomingEventsQuery = groq`
   *[_type == "notice" && isEvent == true
     && ${activeNoticeVisibilityFilter}
-    && (!defined(publishDate) || publishDate > now())]
-  | order(publishDate asc)[0..7]{
+    && coalesce(eventDate, publishDate) > now()]
+  | order(coalesce(eventDate, publishDate) asc)[0..7]{
     _id,
     title,
+    eventDate,
     publishDate,
     slug,
     "categoryTitle": category->title,

@@ -4,6 +4,7 @@ export interface Notice {
   slug: { current: string };
   summary?: string;
   publishDate?: string;
+  eventDate?: string;
   endDate?: string;
   featured?: boolean;
   isEvent?: boolean;

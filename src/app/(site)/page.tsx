@@ -3,10 +3,12 @@ import {
   recentNoticesQuery,
   activeBannersQuery,
   mazalTovQuery,
+  upcomingEventsQuery,
 } from "@/lib/queries";
 import { Notice, Banner, MazalTov } from "@/lib/types";
 import NoticeMarquee from "@/components/NoticeMarquee";
 import MazalTovSection from "@/components/MazalTovSection";
+import UpcomingTicker from "@/components/UpcomingTicker";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
@@ -16,19 +18,22 @@ import MinyanMavenWidget from "@/components/MinyanMavenWidget";
 export const revalidate = 300;
 
 async function getData() {
-  const [recent, banners, mazalTov] = await Promise.all([
+  const [recent, banners, mazalTov, upcomingEvents] = await Promise.all([
     client.fetch<Notice[]>(recentNoticesQuery).catch(() => []),
     client.fetch<Banner[]>(activeBannersQuery).catch(() => []),
     client.fetch<MazalTov[]>(mazalTovQuery).catch(() => []),
+    client.fetch<Notice[]>(upcomingEventsQuery).catch(() => []),
   ]);
-  return { recent, banners, mazalTov };
+  return { recent, banners, mazalTov, upcomingEvents };
 }
 
 export default async function HomePage() {
-  const { recent, banners, mazalTov } = await getData();
+  const { recent, banners, mazalTov, upcomingEvents } = await getData();
 
   return (
     <>
+      {upcomingEvents.length > 0 && <UpcomingTicker events={upcomingEvents} />}
+
       {/* Banner ads */}
       {banners.length > 0 && (
         <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100 py-4">

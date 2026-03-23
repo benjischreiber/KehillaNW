@@ -44,7 +44,22 @@ export const noticeSchema = defineType({
       name: "publishDate",
       title: "Publish Date",
       type: "datetime",
+      description: "When this notice should appear in normal notice listings",
       initialValue: () => new Date().toISOString(),
+    }),
+    defineField({
+      name: "eventDate",
+      title: "Event Date",
+      type: "datetime",
+      description: "When the event is happening. Used in the Upcoming Events ticker.",
+      hidden: ({ document }) => !document?.isEvent,
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          if (context.document?.isEvent && !value) {
+            return "Please add an event date for events";
+          }
+          return true;
+        }),
     }),
     defineField({
       name: "endDate",
@@ -144,7 +159,7 @@ export const noticeSchema = defineType({
       name: "isEvent",
       title: "This is an event",
       type: "boolean",
-      description: "Show in the Upcoming Events ticker",
+      description: "Show in the Upcoming Events ticker and reveal the Event Date field",
       initialValue: false,
     }),
   ],

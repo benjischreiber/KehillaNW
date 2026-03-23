@@ -7,7 +7,7 @@ import { Notice } from "@/lib/types";
 import { format, parseISO } from "date-fns";
 
 interface UpcomingTickerProps {
-  events: Pick<Notice, "_id" | "title" | "publishDate" | "slug" | "categoryTitle">[];
+  events: Pick<Notice, "_id" | "title" | "publishDate" | "eventDate" | "slug" | "categoryTitle">[];
 }
 
 export default function UpcomingTicker({ events }: UpcomingTickerProps) {
@@ -49,9 +49,9 @@ export default function UpcomingTicker({ events }: UpcomingTickerProps) {
               href={`/notices/${event.slug?.current}`}
               className="flex items-center gap-2 text-sm hover:text-gold-300 transition-colors truncate"
             >
-              {event.publishDate && (
+              {(event.eventDate || event.publishDate) && (
                 <span className="text-gold-400 font-bold shrink-0 text-xs">
-                  {formatEventDate(event.publishDate)}
+                  {formatEventDate(event.eventDate || event.publishDate || "")}
                 </span>
               )}
               <span className="truncate">{event.title}</span>

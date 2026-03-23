@@ -6,7 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
-import { ExternalLink, ArrowLeft, Tag, FileText } from "lucide-react";
+import { ExternalLink, ArrowLeft, Tag, FileText, Calendar } from "lucide-react";
+import { formatDateTime } from "@/lib/utils";
 
 export const revalidate = 300;
 
@@ -72,6 +73,12 @@ export default async function NoticePage({ params }: Props) {
             {notice.secondaryCategoryTitle && (
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-gray-100 text-gray-600">
                 {notice.secondaryCategoryTitle}
+              </span>
+            )}
+            {notice.isEvent && (notice.eventDate || notice.publishDate) && (
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-gold-50 text-gold-700 inline-flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                {formatDateTime(notice.eventDate || notice.publishDate || "")}
               </span>
             )}
           </div>
