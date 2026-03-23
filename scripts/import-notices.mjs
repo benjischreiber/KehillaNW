@@ -36,62 +36,177 @@ function decodeHtml(text) {
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
     .replace(/&ndash;/g, "–")
     .replace(/&pound;/g, "£")
     .replace(/&#39;/g, "'");
 }
 
-// Convert HTML content to simple portable text blocks
+function stripTags(text) {
+  return decodeHtml(text)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sanitizeHref(href) {
+  const value = decodeHtml((href || "").trim());
+  if (!value) return null;
+  if (/^(https?:\/\/|mailto:|tel:)/i.test(value)) return value;
+  return null;
+}
+
+function htmlToPortableChildren(fragment) {
+  const children = [];
+  const markDefs = [];
+  const anchorRegex = /<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+  let lastIndex = 0;
+  let match;
+
+  const pushText = (text, marks = []) => {
+    const normalized = stripTags(text);
+    if (!normalized) return;
+    children.push({
+      _type: "span",
+      _key: Math.random().toString(36).slice(2),
+      text: normalized,
+      marks,
+    });
+  };
+
+  while ((match = anchorRegex.exec(fragment)) !== null) {
+    pushText(fragment.slice(lastIndex, match.index));
+
+    const href = sanitizeHref(match[1]);
+    const linkText = stripTags(match[2]);
+    if (href && linkText) {
+      const key = Math.random().toString(36).slice(2);
+      markDefs.push({
+        _key: key,
+        _type: "link",
+        href,
+        blank: true,
+      });
+      pushText(match[2], [key]);
+    } else {
+      pushText(match[2]);
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  pushText(fragment.slice(lastIndex));
+
+  return { children, markDefs };
+}
+
+function makeBlock(style, fragment) {
+  const { children, markDefs } = htmlToPortableChildren(fragment);
+  if (children.length === 0) return null;
+  return {
+    _type: "block",
+    _key: Math.random().toString(36).slice(2),
+    style,
+    children,
+    markDefs,
+  };
+}
+
+function normalizeBlockText(block) {
+  return block.children.map((child) => child.text).join(" ").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function normalizeText(text) {
+  return (text || "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function textKey(text) {
+  return normalizeText(text)
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+// Convert HTML content to portable text blocks while keeping inline links.
 function htmlToPortableText(html) {
   if (!html) return [];
 
-  // Strip script tags
-  html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+  html = html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
 
-  // Extract text paragraphs and headings
-  const blocks = [];
-
-  // Replace heading tags with heading blocks
-  const headingMatches = [
-    ...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi),
-    ...html.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/gi),
-    ...html.matchAll(/<h4[^>]*>([\s\S]*?)<\/h4>/gi),
+  const matches = [];
+  const patterns = [
+    { regex: /<h2[^>]*>([\s\S]*?)<\/h2>/gi, style: "h2" },
+    { regex: /<h3[^>]*>([\s\S]*?)<\/h3>/gi, style: "h3" },
+    { regex: /<h4[^>]*>([\s\S]*?)<\/h4>/gi, style: "h4" },
+    { regex: /<p[^>]*>([\s\S]*?)<\/p>/gi, style: "normal" },
   ];
-  const pMatches = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
 
-  const allMatches = [...headingMatches.map(m => ({ type: "heading", text: m[1], index: m.index })),
-                      ...pMatches.map(m => ({ type: "p", text: m[1], index: m.index }))]
-    .sort((a, b) => a.index - b.index);
-
-  for (const match of allMatches) {
-    // Strip remaining HTML tags
-    const text = decodeHtml(match.text).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    if (!text) continue;
-
-    blocks.push({
-      _type: "block",
-      _key: Math.random().toString(36).slice(2),
-      style: match.type === "heading" ? "h3" : "normal",
-      children: [{ _type: "span", _key: Math.random().toString(36).slice(2), text, marks: [] }],
-      markDefs: [],
-    });
-  }
-
-  // If no structured content found, try to get plain text
-  if (blocks.length === 0) {
-    const plainText = decodeHtml(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    if (plainText) {
-      blocks.push({
-        _type: "block",
-        _key: Math.random().toString(36).slice(2),
-        style: "normal",
-        children: [{ _type: "span", _key: Math.random().toString(36).slice(2), text: plainText, marks: [] }],
-        markDefs: [],
-      });
+  for (const { regex, style } of patterns) {
+    let match;
+    while ((match = regex.exec(html)) !== null) {
+      matches.push({ index: match.index, style, fragment: match[1] });
     }
   }
 
+  matches.sort((a, b) => a.index - b.index);
+
+  const blocks = [];
+  for (const match of matches) {
+    if (match.style === "normal" && /<(h2|h3|h4|ul|ol|li)\b/i.test(match.fragment)) {
+      continue;
+    }
+
+    const block = makeBlock(match.style, match.fragment);
+    if (!block) continue;
+
+    const currentText = normalizeBlockText(block);
+    const previousText = blocks.length > 0 ? normalizeBlockText(blocks[blocks.length - 1]) : null;
+    if (currentText && currentText === previousText) continue;
+
+    blocks.push(block);
+  }
+
+  if (blocks.length === 0) {
+    const fallback = makeBlock("normal", html);
+    if (fallback) blocks.push(fallback);
+  }
+
   return blocks;
+}
+
+function trimLeadingDuplicateBlocks(blocks, summary, title) {
+  const summaryText = normalizeText(summary);
+  const titleText = normalizeText(title);
+  const summaryKey = textKey(summary);
+  const titleKey = textKey(title);
+  let startIndex = 0;
+
+  while (startIndex < blocks.length) {
+    const blockText = normalizeBlockText(blocks[startIndex]);
+    const blockKey = textKey(blockText);
+    if (!blockText) {
+      startIndex += 1;
+      continue;
+    }
+
+    const matchesSummary =
+      (summaryText && blockText === summaryText) ||
+      (summaryKey && blockKey === summaryKey);
+    const matchesTitle =
+      (titleText && blockText === titleText) ||
+      (titleKey && blockKey && (blockKey === titleKey || titleKey.includes(blockKey) || blockKey.includes(titleKey)));
+
+    if (matchesSummary || matchesTitle) {
+      startIndex += 1;
+      continue;
+    }
+
+    break;
+  }
+
+  return blocks.slice(startIndex);
 }
 
 async function main() {
@@ -170,7 +285,11 @@ async function main() {
     const catId = catIdMap[catName] || catIdMap["Community"];
     const slug = slugify(notice.title);
 
-    const content = htmlToPortableText(notice.contentHtml || "");
+    const content = trimLeadingDuplicateBlocks(
+      htmlToPortableText(notice.contentHtml || ""),
+      notice.summary?.trim() || "",
+      notice.title?.trim() || ""
+    );
     const noticeId = `notice-${slug}`;
     const existing = await client.fetch(
       `*[_id == $id][0]{ _id, publishDate, image, pdfFile, secondaryCategory, visible }`,
