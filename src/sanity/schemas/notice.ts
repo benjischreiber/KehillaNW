@@ -12,6 +12,13 @@ export const noticeSchema = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "visible",
+      title: "Visible on website",
+      type: "boolean",
+      description: "Turn this off to hide the notice without deleting it",
+      initialValue: true,
+    }),
+    defineField({
       name: "slug",
       title: "URL Slug",
       type: "slug",
@@ -44,13 +51,6 @@ export const noticeSchema = defineType({
       title: "End Date (optional)",
       type: "datetime",
       description: "If set, the notice will be hidden after this date",
-    }),
-    defineField({
-      name: "visible",
-      title: "Visible on website",
-      type: "boolean",
-      description: "Turn this off to hide the notice without deleting it",
-      initialValue: true,
     }),
     defineField({
       name: "summary",

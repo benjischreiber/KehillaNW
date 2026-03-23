@@ -159,8 +159,8 @@ function extractArticleBody(html) {
 
 function extractArticleImage(html) {
   const articleImage =
-    html.match(/<img[^>]*src="([^"]*\/img\/articles\/[^"]+\.(?:jpe?g|png|webp|gif|JPG|JPEG|PNG))"[^>]*>/i) ||
-    html.match(/<img[^>]*src="([^"]*\/uploads\/[^"]+\.(?:jpe?g|png|webp|gif|JPG|JPEG|PNG))"[^>]*>/i);
+    html.match(/<img[^>]*src="([^"]*\/img\/articles\/[^">\s]+)"[^>]*>/i) ||
+    html.match(/<img[^>]*src="([^"]*\/uploads\/[^">\s]+)"[^>]*>/i);
 
   if (!articleImage) return null;
   return articleImage[1].startsWith("http")

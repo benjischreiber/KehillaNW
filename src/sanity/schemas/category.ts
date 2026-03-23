@@ -12,6 +12,13 @@ export const categorySchema = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "visible",
+      title: "Visible on website",
+      type: "boolean",
+      description: "Turn this off to hide the category from the website without deleting it",
+      initialValue: true,
+    }),
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
@@ -53,13 +60,6 @@ export const categorySchema = defineType({
       type: "boolean",
       description: "Shuls, Schools, Shiurim etc.",
       initialValue: false,
-    }),
-    defineField({
-      name: "visible",
-      title: "Visible on website",
-      type: "boolean",
-      description: "Turn this off to hide the category from the website without deleting it",
-      initialValue: true,
     }),
     defineField({
       name: "showInMainNav",

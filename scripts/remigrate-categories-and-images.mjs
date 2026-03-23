@@ -134,7 +134,7 @@ async function fetchText(url) {
 
 function extractArticleImage(html) {
   if (!html) return null;
-  const match = html.match(/\/img\/articles\/(item_\d+_[^"'\s]+\.(?:jpe?g|png|webp|JPG|JPEG|PNG))/i);
+  const match = html.match(/\/img\/articles\/(item_\d+_[^"'\s>]+)/i);
   if (match) return `${BASE}/img/articles/${match[1]}`;
   return null;
 }

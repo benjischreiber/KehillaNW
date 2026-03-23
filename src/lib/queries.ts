@@ -19,20 +19,28 @@ export const noticeFields = groq`
   "secondaryCategorySlug": secondaryCategory->slug.current,
 `;
 
+const activeNoticeVisibilityFilter = `
+  (!defined(visible) || visible == true)
+  && (!defined(endDate) || endDate > now())
+  && (!defined(category) || !defined(category->visible) || category->visible == true)
+  && (!defined(category->parent) || !defined(category->parent->visible) || category->parent->visible == true)
+  && (!defined(secondaryCategory) || !defined(secondaryCategory->visible) || secondaryCategory->visible == true)
+  && (!defined(secondaryCategory->parent) || !defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true)
+`;
+
 export const featuredNoticesQuery = groq`
-  *[_type == "notice" && featured == true && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && featured == true && ${activeNoticeVisibilityFilter}]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..7]{${noticeFields}}
 `;
 
 export const recentNoticesQuery = groq`
-  *[_type == "notice" && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && ${activeNoticeVisibilityFilter}]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{${noticeFields}}
 `;
 
 export const upcomingEventsQuery = groq`
   *[_type == "notice" && isEvent == true
-    && (!defined(visible) || visible == true)
-    && (!defined(endDate) || endDate > now())
+    && ${activeNoticeVisibilityFilter}
     && (!defined(publishDate) || publishDate > now())]
   | order(publishDate asc)[0..7]{
     _id,
@@ -49,12 +57,12 @@ export const noticesByCategory = groq`
     (category->parent->slug.current == $slug && (!defined(category->parent->visible) || category->parent->visible == true)) ||
     (secondaryCategory->slug.current == $slug && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true)) ||
     (secondaryCategory->parent->slug.current == $slug && (!defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true))
-  ) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+  ) && ${activeNoticeVisibilityFilter}]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
 export const noticeBySlug = groq`
-  *[_type == "notice" && slug.current == $slug && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())][0]{
+  *[_type == "notice" && slug.current == $slug && ${activeNoticeVisibilityFilter}][0]{
     ${noticeFields}
     content,
     "pdfUrl": pdfFile.asset->url,
@@ -62,7 +70,7 @@ export const noticeBySlug = groq`
 `;
 
 export const allNoticesQuery = groq`
-  *[_type == "notice" && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+  *[_type == "notice" && ${activeNoticeVisibilityFilter}]
   | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 

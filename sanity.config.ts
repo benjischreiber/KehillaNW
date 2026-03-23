@@ -18,10 +18,40 @@ export default defineConfig({
             S.listItem()
               .title("Notices")
               .child(
-                S.documentTypeList("notice")
-                  .title("All Notices")
-                  .defaultOrdering([
-                    { field: "publishDate", direction: "desc" },
+                S.list()
+                  .title("Notices")
+                  .items([
+                    S.listItem()
+                      .title("All Notices")
+                      .child(
+                        S.documentTypeList("notice")
+                          .title("All Notices")
+                          .defaultOrdering([
+                            { field: "publishDate", direction: "desc" },
+                          ])
+                      ),
+                    S.listItem()
+                      .title("Visible Notices")
+                      .child(
+                        S.documentList()
+                          .title("Visible Notices")
+                          .schemaType("notice")
+                          .filter('_type == "notice" && (!defined(visible) || visible == true)')
+                          .defaultOrdering([
+                            { field: "publishDate", direction: "desc" },
+                          ])
+                      ),
+                    S.listItem()
+                      .title("Hidden Notices")
+                      .child(
+                        S.documentList()
+                          .title("Hidden Notices")
+                          .schemaType("notice")
+                          .filter('_type == "notice" && visible == false')
+                          .defaultOrdering([
+                            { field: "_updatedAt", direction: "desc" },
+                          ])
+                      ),
                   ])
               ),
             S.listItem()
@@ -42,8 +72,39 @@ export default defineConfig({
             S.listItem()
               .title("Categories")
               .child(
-                S.documentTypeList("category")
+                S.list()
                   .title("Categories")
+                  .items([
+                    S.listItem()
+                      .title("All Categories")
+                      .child(
+                        S.documentTypeList("category")
+                          .title("All Categories")
+                      ),
+                    S.listItem()
+                      .title("Visible Categories")
+                      .child(
+                        S.documentList()
+                          .title("Visible Categories")
+                          .schemaType("category")
+                          .filter('_type == "category" && (!defined(visible) || visible == true)')
+                          .defaultOrdering([
+                            { field: "order", direction: "asc" },
+                            { field: "title", direction: "asc" },
+                          ])
+                      ),
+                    S.listItem()
+                      .title("Hidden Categories")
+                      .child(
+                        S.documentList()
+                          .title("Hidden Categories")
+                          .schemaType("category")
+                          .filter('_type == "category" && visible == false')
+                          .defaultOrdering([
+                            { field: "title", direction: "asc" },
+                          ])
+                      ),
+                  ])
               ),
           ]),
     }),
