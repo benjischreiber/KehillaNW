@@ -50,6 +50,15 @@ function stripTags(text) {
     .trim();
 }
 
+function inlineText(text) {
+  const decoded = decodeHtml(text).replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, " ");
+  const hasLeadingSpace = /^\s/.test(decoded);
+  const hasTrailingSpace = /\s$/.test(decoded);
+  const collapsed = decoded.replace(/\s+/g, " ").trim();
+  if (!collapsed) return "";
+  return `${hasLeadingSpace ? " " : ""}${collapsed}${hasTrailingSpace ? " " : ""}`;
+}
+
 function sanitizeHref(href) {
   const value = decodeHtml((href || "").trim());
   if (!value) return null;
@@ -65,7 +74,7 @@ function htmlToPortableChildren(fragment) {
   let match;
 
   const pushText = (text, marks = []) => {
-    const normalized = stripTags(text);
+    const normalized = inlineText(text);
     if (!normalized) return;
     children.push({
       _type: "span",
