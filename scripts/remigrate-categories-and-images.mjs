@@ -50,10 +50,11 @@ const SUBCATEGORIES = [
   { sanityId: "category-recipes",                 slug: "recipes",                  title: "Recipes",                  parentId: "category-shopping",   colour: "purple" },
   // Entertainment
   { sanityId: "category-outings-activities",      slug: "outings-activities",       title: "Outings & Activities",     parentId: "category-entertainment", colour: "rose" },
-  { sanityId: "category-online-events",           slug: "online-events",            title: "Online Events & Podcasts", parentId: "category-entertainment", colour: "rose" },
-  { sanityId: "category-purim",                   slug: "purim",                    title: "Purim",                    parentId: "category-entertainment", colour: "rose" },
-  { sanityId: "category-pesach",                  slug: "pesach",                   title: "Pesach",                   parentId: "category-entertainment", colour: "rose" },
-  { sanityId: "category-travel",                  slug: "travel",                   title: "Travel",                   parentId: "category-entertainment", colour: "rose" },
+  // Old site grouped these under Education / Government, not Entertainment.
+  { sanityId: "category-online-events",           slug: "online-events",            title: "Online Events & Podcasts", parentId: "category-education", colour: "orange" },
+  { sanityId: "category-purim",                   slug: "purim",                    title: "Purim",                    parentId: "category-education", colour: "orange" },
+  { sanityId: "category-pesach",                  slug: "pesach",                   title: "Pesach",                   parentId: "category-education", colour: "orange" },
+  { sanityId: "category-travel",                  slug: "travel",                   title: "Travel",                   parentId: "category-government", colour: "blue" },
   // Education
   { sanityId: "category-childrens-education",     slug: "childrens-education",      title: "Children's Education",     parentId: "category-education",  colour: "orange" },
   { sanityId: "category-information-for-educators", slug: "information-for-educators", title: "Information for Educators", parentId: "category-education", colour: "orange" },
