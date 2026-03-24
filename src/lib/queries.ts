@@ -114,7 +114,19 @@ export const categoryWithParent = groq`
 `;
 
 export const subcategoriesForParent = groq`
-  *[_type == "category" && parent->slug.current == $parentSlug && (!defined(visible) || visible == true)] | order(order asc, title asc){
+  *[
+    _type == "category"
+    && parent->slug.current == $parentSlug
+    && (!defined(visible) || visible == true)
+    && count(*[
+      _type == "notice"
+      && ${activeNoticeVisibilityFilter}
+      && (
+        category._ref == ^._id
+        || secondaryCategory._ref == ^._id
+      )
+    ]) > 0
+  ] | order(order asc, title asc){
     _id, title, colour, "slug": slug.current
   }
 `;
