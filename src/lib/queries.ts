@@ -23,10 +23,20 @@ export const noticeFields = groq`
 const activeNoticeVisibilityFilter = `
   (!defined(visible) || visible == true)
   && (!defined(endDate) || endDate > now())
-  && (!defined(category) || !defined(category->visible) || category->visible == true)
-  && (!defined(category->parent) || !defined(category->parent->visible) || category->parent->visible == true)
-  && (!defined(secondaryCategory) || !defined(secondaryCategory->visible) || secondaryCategory->visible == true)
-  && (!defined(secondaryCategory->parent) || !defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true)
+  && (
+    (
+      defined(category)
+      && defined(category->_id)
+      && (!defined(category->visible) || category->visible == true)
+      && (!defined(category->parent) || !defined(category->parent->visible) || category->parent->visible == true)
+    )
+    || (
+      defined(secondaryCategory)
+      && defined(secondaryCategory->_id)
+      && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true)
+      && (!defined(secondaryCategory->parent) || !defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true)
+    )
+  )
 `;
 
 export const featuredNoticesQuery = groq`
