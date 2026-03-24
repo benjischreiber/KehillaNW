@@ -30,6 +30,17 @@ interface SubCat {
   slug: string;
 }
 
+function dedupeSubcategories(items: SubCat[]) {
+  const seen = new Set<string>();
+
+  return items.filter((item) => {
+    const key = (item.slug || item.title || "").trim().toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const cat = await client
@@ -54,9 +65,9 @@ export default async function CategoryPage({ params }: Props) {
   const isSubcategory = !!catInfo?.parentSlug;
   const parentSlugForSubs = isSubcategory ? catInfo!.parentSlug! : slug;
 
-  const subcategories = await client
+  const subcategories = dedupeSubcategories(await client
     .fetch<SubCat[]>(subcategoriesForParent, { parentSlug: parentSlugForSubs })
-    .catch(() => []);
+    .catch(() => []));
 
   if (!catInfo) notFound();
 

@@ -18,6 +18,8 @@ const categoryMap = {
   "Kashrus": { title: "Kashrus", slug: "kashrus", colour: "orange", parent: "community" },
   "Parenting": { title: "Parenting", slug: "parenting", colour: "teal", parent: "community" },
   "Wellbeing": { title: "Wellbeing", slug: "wellbeing", colour: "green", parent: "support" },
+  "Beis Hamikdosh": { title: "Beis Hamikdosh", slug: "beis-hamikdosh", colour: "orange", parent: "education" },
+  "Online Events & Podcasts": { title: "Online Events & Podcasts", slug: "online-events", colour: "orange", parent: "education" },
   "Government": { title: "Useful Info", slug: "useful-info", colour: "blue" },
   "Support": { title: "Support", slug: "support", colour: "green" },
   "Shopping": { title: "Shopping", slug: "shopping", colour: "purple" },
