@@ -15,7 +15,7 @@ export const categorySchema = defineType({
       name: "visible",
       title: "Visible on website",
       type: "boolean",
-      description: "Turn this off to hide the category from the website without deleting it",
+      description: "Turn this off and publish to hide the category from the website without deleting it",
       initialValue: true,
     }),
     defineField({
