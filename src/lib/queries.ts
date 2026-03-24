@@ -12,6 +12,7 @@ export const noticeFields = groq`
   featured,
   isEvent,
   externalLink,
+  "pdfUrl": pdfFile.asset->url,
   image,
   "categoryTitle": category->title,
   "categorySlug": category->slug.current,
@@ -77,7 +78,6 @@ export const noticeBySlug = groq`
   *[_type == "notice" && slug.current == $slug && ${activeNoticeVisibilityFilter}][0]{
     ${noticeFields}
     content,
-    "pdfUrl": pdfFile.asset->url,
   }
 `;
 

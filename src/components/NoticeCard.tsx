@@ -8,6 +8,32 @@ interface NoticeCardProps {
   size?: "sm" | "md" | "lg";
 }
 
+function PdfPreview({
+  pdfUrl,
+  title,
+  badgeClass,
+}: {
+  pdfUrl: string;
+  title: string;
+  badgeClass: string;
+}) {
+  return (
+    <div className="relative h-full w-full bg-white">
+      <iframe
+        src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&page=1&view=FitH`}
+        title={`${title} PDF preview`}
+        className="h-full w-full border-0 pointer-events-none"
+      />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white via-white/90 to-transparent" />
+      <div className="pointer-events-none absolute right-3 bottom-3">
+        <span className={`inline-flex items-center rounded-full px-2 py-1 text-[11px] font-bold shadow-sm ${badgeClass}`}>
+          PDF
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
   const hasInternalPage = !!notice.slug?.current;
   const href = hasInternalPage
@@ -40,6 +66,12 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
               alt={notice.title}
               fill
               className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : notice.pdfUrl ? (
+            <PdfPreview
+              pdfUrl={notice.pdfUrl}
+              title={notice.title}
+              badgeClass={badgeClass}
             />
           ) : (
             <div className={`h-full w-full ${placeholderBg} flex items-center justify-center opacity-90`}>
@@ -103,7 +135,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
       rel={isExternal ? "noopener noreferrer" : undefined}
       className="group flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100"
     >
-      {notice.image && (
+      {notice.image ? (
         <div className="relative h-20 w-20 rounded-lg overflow-hidden shrink-0">
           <Image
             src={urlFor(notice.image).width(160).height(160).url()}
@@ -112,7 +144,15 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
-      )}
+      ) : notice.pdfUrl ? (
+        <div className="relative h-20 w-20 rounded-lg overflow-hidden shrink-0 bg-white border border-gray-100">
+          <iframe
+            src={`${notice.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&page=1&view=FitH`}
+            title={`${notice.title} PDF preview`}
+            className="h-full w-full border-0 pointer-events-none"
+          />
+        </div>
+      ) : null}
       <div className="min-w-0 flex-1">
         {notice.categoryTitle && (
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badgeClass} mb-1 inline-block`}>

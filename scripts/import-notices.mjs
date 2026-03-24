@@ -127,6 +127,13 @@ function makeBlock(style, fragment) {
   };
 }
 
+function makeBlocks(style, fragment) {
+  return fragment
+    .split(/<br\s*\/?>/gi)
+    .map((part) => makeBlock(style, part))
+    .filter(Boolean);
+}
+
 function normalizeBlockText(block) {
   return block.children.map((child) => child.text).join(" ").replace(/\s+/g, " ").trim().toLowerCase();
 }
@@ -172,14 +179,16 @@ function htmlToPortableText(html) {
       continue;
     }
 
-    const block = makeBlock(match.style, match.fragment);
-    if (!block) continue;
+    const candidateBlocks = makeBlocks(match.style, match.fragment);
+    if (candidateBlocks.length === 0) continue;
 
-    const currentText = normalizeBlockText(block);
-    const previousText = blocks.length > 0 ? normalizeBlockText(blocks[blocks.length - 1]) : null;
-    if (currentText && currentText === previousText) continue;
+    for (const block of candidateBlocks) {
+      const currentText = normalizeBlockText(block);
+      const previousText = blocks.length > 0 ? normalizeBlockText(blocks[blocks.length - 1]) : null;
+      if (currentText && currentText === previousText) continue;
 
-    blocks.push(block);
+      blocks.push(block);
+    }
   }
 
   if (blocks.length === 0) {
