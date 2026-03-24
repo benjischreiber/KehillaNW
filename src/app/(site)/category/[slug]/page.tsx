@@ -30,10 +30,12 @@ interface SubCat {
   slug: string;
 }
 
-function dedupeSubcategories(items: SubCat[]) {
+function dedupeSubcategories(items: SubCat[], parentTitle?: string) {
   const seen = new Set<string>();
+  const normalizedParentTitle = (parentTitle || "").trim().toLowerCase();
 
   return items.filter((item) => {
+    if ((item.title || "").trim().toLowerCase() === normalizedParentTitle) return false;
     const key = (item.slug || item.title || "").trim().toLowerCase();
     if (!key || seen.has(key)) return false;
     seen.add(key);
@@ -64,14 +66,14 @@ export default async function CategoryPage({ params }: Props) {
 
   const isSubcategory = !!catInfo?.parentSlug;
   const parentSlugForSubs = isSubcategory ? catInfo!.parentSlug! : slug;
+  const title = catInfo?.title || slug.replace(/-/g, " ");
 
   const subcategories = dedupeSubcategories(await client
     .fetch<SubCat[]>(subcategoriesForParent, { parentSlug: parentSlugForSubs })
-    .catch(() => []));
+    .catch(() => []), title);
 
   if (!catInfo) notFound();
 
-  const title = catInfo?.title || slug.replace(/-/g, " ");
   const colour = catInfo?.colour || catInfo?.parentColour || "blue";
   const solidClass = categoryColourMap[colour] || "bg-navy-700";
 
