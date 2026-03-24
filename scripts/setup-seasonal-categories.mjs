@@ -20,7 +20,6 @@ const seasonalChildren = [
   { title: "Lag BaOmer", slug: "lag-baomer", order: 90 },
   { title: "Shavuos", slug: "shavuos", order: 100 },
   { title: "Tisha B'Av", slug: "tisha-bav", order: 110 },
-  { title: "Yom HaShoah", slug: "yom-hashoah", order: 120 },
 ];
 
 async function main() {
