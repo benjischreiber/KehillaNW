@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import NoticeContentInput from "@/components/NoticeContentInput";
 
 export const noticeSchema = defineType({
   name: "notice",
@@ -78,6 +79,9 @@ export const noticeSchema = defineType({
       name: "content",
       title: "Content",
       type: "array",
+      components: {
+        input: NoticeContentInput as never,
+      },
       of: [
         {
           type: "block",
