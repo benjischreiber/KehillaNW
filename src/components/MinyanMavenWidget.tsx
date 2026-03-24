@@ -116,14 +116,6 @@ export default function MinyanMavenWidget() {
       {/* Header */}
       <div className="bg-navy-900 px-5 py-3 flex items-center justify-between">
         <h2 className="font-bold text-white text-sm">Minyan Times — GG &amp; Hendon</h2>
-        <Link
-          href="https://www.minyanmaven.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-navy-300 text-xs hover:text-white transition-colors"
-        >
-          Minyan Maven →
-        </Link>
       </div>
 
       {/* Tabs */}

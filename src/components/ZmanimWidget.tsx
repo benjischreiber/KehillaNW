@@ -143,7 +143,7 @@ export default function ZmanimWidget() {
             )}
 
             {/* Links */}
-            <div className="mt-3 space-y-1.5">
+            <div className="mt-3">
               <Link
                 href="https://ggbh.info/Timetable/mincha-times2.pdf"
                 target="_blank"
@@ -151,14 +151,6 @@ export default function ZmanimWidget() {
                 className="block text-center text-xs text-navy-700 font-semibold hover:text-gold-600 transition-colors"
               >
                 Download Mincha/Maariv Zmanim sheet →
-              </Link>
-              <Link
-                href="https://www.minyanmaven.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center text-xs text-navy-700 font-semibold hover:text-gold-600 transition-colors"
-              >
-                Find a Minyan — Minyan Maven app →
               </Link>
             </div>
           </>
