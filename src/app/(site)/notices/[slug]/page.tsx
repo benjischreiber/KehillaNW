@@ -7,7 +7,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
 import { ExternalLink, ArrowLeft, Tag, FileText, Calendar } from "lucide-react";
-import { formatDateTime } from "@/lib/utils";
+import { decodeHtmlEntities, decodePortableTextValue, formatDateTime } from "@/lib/utils";
 
 export const revalidate = 300;
 
@@ -30,6 +30,10 @@ export default async function NoticePage({ params }: Props) {
   const notice = await client.fetch<Notice>(noticeBySlug, { slug }).catch(() => null);
 
   if (!notice) notFound();
+
+  const decodedTitle = decodeHtmlEntities(notice.title);
+  const decodedSummary = notice.summary ? decodeHtmlEntities(notice.summary) : undefined;
+  const decodedContent = notice.content ? decodePortableTextValue(notice.content) : undefined;
 
   const badgeClass =
     notice.categoryColour && categoryColourTextMap[notice.categoryColour]
@@ -85,13 +89,13 @@ export default async function NoticePage({ params }: Props) {
 
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-3 leading-tight">
-            {notice.title}
+            {decodedTitle}
           </h1>
 
           {/* Summary */}
-          {notice.summary && (
+          {decodedSummary && (
             <p className="text-lg text-gray-600 mb-6 leading-relaxed border-l-4 border-gold-400 pl-4">
-              {notice.summary}
+              {decodedSummary}
             </p>
           )}
 
@@ -124,10 +128,10 @@ export default async function NoticePage({ params }: Props) {
           )}
 
           {/* Rich text content */}
-          {notice.content && (
+          {decodedContent && (
             <div className="notice-content">
               <PortableText
-                value={notice.content}
+                value={decodedContent}
                 components={{
                   types: {
                     image: ({ value }) => (

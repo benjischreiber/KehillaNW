@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Notice, categoryColourMap, categoryColourTextMap } from "@/lib/types";
 import { urlFor } from "@/sanity/lib/image";
+import { decodeHtmlEntities } from "@/lib/utils";
 
 interface NoticeCardProps {
   notice: Notice;
@@ -101,6 +102,8 @@ function TextPreview({
 }
 
 export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
+  const decodedTitle = decodeHtmlEntities(notice.title);
+  const decodedSummary = notice.summary ? decodeHtmlEntities(notice.summary) : undefined;
   const hasInternalPage = !!notice.slug?.current;
   const href = hasInternalPage
     ? `/notices/${notice.slug.current}`
@@ -129,20 +132,20 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
           {notice.image ? (
             <Image
               src={urlFor(notice.image).width(600).height(400).url()}
-              alt={notice.title}
+              alt={decodedTitle}
               fill
               className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
             />
           ) : notice.pdfUrl ? (
             <PdfPreview
               pdfUrl={notice.pdfUrl}
-              title={notice.title}
+              title={decodedTitle}
               badgeClass={badgeClass}
             />
           ) : (
             <TextPreview
-              title={notice.title}
-              summary={notice.summary}
+              title={decodedTitle}
+              summary={decodedSummary}
               externalLink={notice.externalLink}
               placeholderBg={placeholderBg}
             />
@@ -155,7 +158,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         </div>
         <div className="p-3 flex-1 overflow-hidden">
           <h3 className="font-bold text-navy-900 text-sm leading-snug group-hover:text-gold-600 transition-colors line-clamp-2">
-            {notice.title}
+            {decodedTitle}
           </h3>
         </div>
       </Link>
@@ -174,7 +177,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
           <div className="relative h-14 w-14 rounded-lg overflow-hidden shrink-0">
             <Image
               src={urlFor(notice.image).width(100).height(100).url()}
-              alt={notice.title}
+              alt={decodedTitle}
               fill
               className="object-cover"
             />
@@ -186,10 +189,10 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         )}
         <div className="min-w-0">
           <h4 className="font-semibold text-sm text-navy-900 group-hover:text-gold-600 transition-colors line-clamp-2">
-            {notice.title}
+            {decodedTitle}
           </h4>
-          {notice.summary && (
-            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{notice.summary}</p>
+          {decodedSummary && (
+            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{decodedSummary}</p>
           )}
         </div>
       </Link>
@@ -217,7 +220,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         <div className="relative h-20 w-20 rounded-lg overflow-hidden shrink-0 bg-white border border-gray-100">
           <iframe
             src={`${notice.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&page=1&view=FitH`}
-            title={`${notice.title} PDF preview`}
+            title={`${decodedTitle} PDF preview`}
             className="h-full w-full border-0 pointer-events-none"
           />
         </div>
@@ -227,7 +230,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
             {getLinkLabel(notice.externalLink) ? "Link" : "Text"}
           </span>
           <span className="line-clamp-3 text-xs font-semibold leading-tight text-white">
-            {getLinkLabel(notice.externalLink) || notice.summary || notice.title}
+            {getLinkLabel(notice.externalLink) || decodedSummary || decodedTitle}
           </span>
         </div>
       )}
@@ -238,10 +241,10 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
           </span>
         )}
         <h3 className="font-bold text-navy-900 group-hover:text-gold-600 transition-colors leading-snug">
-          {notice.title}
+          {decodedTitle}
         </h3>
-        {notice.summary && (
-          <p className="text-sm text-gray-500 line-clamp-2 mt-1">{notice.summary}</p>
+        {decodedSummary && (
+          <p className="text-sm text-gray-500 line-clamp-2 mt-1">{decodedSummary}</p>
         )}
       </div>
     </Link>
