@@ -8,6 +8,26 @@ interface NoticeCardProps {
   size?: "sm" | "md" | "lg";
 }
 
+function getLinkLabel(externalLink?: string) {
+  if (!externalLink) return null;
+
+  try {
+    if (externalLink.startsWith("mailto:")) {
+      return externalLink.replace(/^mailto:/i, "");
+    }
+    if (externalLink.startsWith("tel:")) {
+      return externalLink.replace(/^tel:/i, "");
+    }
+
+    const url = new URL(externalLink);
+    return url.hostname.replace(/^www\./i, "");
+  } catch {
+    return externalLink
+      .replace(/^(https?:\/\/|mailto:|tel:)/i, "")
+      .replace(/^www\./i, "");
+  }
+}
+
 function PdfPreview({
   pdfUrl,
   title,
@@ -29,6 +49,52 @@ function PdfPreview({
         <span className={`inline-flex items-center rounded-full px-2 py-1 text-[11px] font-bold shadow-sm ${badgeClass}`}>
           PDF
         </span>
+      </div>
+    </div>
+  );
+}
+
+function TextPreview({
+  title,
+  summary,
+  externalLink,
+  placeholderBg,
+}: {
+  title: string;
+  summary?: string;
+  externalLink?: string;
+  placeholderBg: string;
+}) {
+  const linkLabel = getLinkLabel(externalLink);
+
+  return (
+    <div className={`relative h-full w-full ${placeholderBg} overflow-hidden`}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.14))]" />
+      <div className="relative flex h-full flex-col justify-between p-5 text-white">
+        <div className="flex items-start justify-between gap-3">
+          <div className="max-w-[75%] rounded-full bg-white/14 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
+            {linkLabel ? "External link" : "Notice"}
+          </div>
+          {linkLabel && (
+            <div className="max-w-[45%] truncate rounded-full border border-white/18 bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/90 backdrop-blur-sm">
+              {linkLabel}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <div className="mb-3 text-3xl font-black leading-none text-white/16">
+            {linkLabel ? linkLabel.split(".")[0].slice(0, 10).toUpperCase() : "NOTICE"}
+          </div>
+          <h4 className="line-clamp-3 text-lg font-bold leading-tight text-white">
+            {title}
+          </h4>
+          {summary && (
+            <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-white/85">
+              {summary}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -74,9 +140,12 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
               badgeClass={badgeClass}
             />
           ) : (
-            <div className={`h-full w-full ${placeholderBg} flex items-center justify-center opacity-90`}>
-              <span className="text-white text-4xl font-bold opacity-30 select-none tracking-widest">KNW</span>
-            </div>
+            <TextPreview
+              title={notice.title}
+              summary={notice.summary}
+              externalLink={notice.externalLink}
+              placeholderBg={placeholderBg}
+            />
           )}
           {notice.categoryTitle && (
             <span className={`absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded-full ${badgeClass} shadow-sm`}>
@@ -111,8 +180,8 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
             />
           </div>
         ) : (
-          <div className={`h-14 w-14 rounded-lg shrink-0 flex items-center justify-center text-xs font-bold ${badgeClass}`}>
-            {notice.categoryTitle?.slice(0, 3) || "KNW"}
+          <div className={`h-14 w-14 rounded-lg shrink-0 flex items-center justify-center text-[10px] font-bold ${badgeClass}`}>
+            {getLinkLabel(notice.externalLink)?.slice(0, 3).toUpperCase() || notice.categoryTitle?.slice(0, 3) || "TXT"}
           </div>
         )}
         <div className="min-w-0">
@@ -152,7 +221,16 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
             className="h-full w-full border-0 pointer-events-none"
           />
         </div>
-      ) : null}
+      ) : (
+        <div className={`h-20 w-20 rounded-lg shrink-0 p-2 flex flex-col justify-between ${placeholderBg}`}>
+          <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/75">
+            {getLinkLabel(notice.externalLink) ? "Link" : "Text"}
+          </span>
+          <span className="line-clamp-3 text-xs font-semibold leading-tight text-white">
+            {getLinkLabel(notice.externalLink) || notice.summary || notice.title}
+          </span>
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         {notice.categoryTitle && (
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badgeClass} mb-1 inline-block`}>
