@@ -37,7 +37,12 @@ function decodeHtml(text) {
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, "\"")
+    .replace(/&ldquo;/g, "\"")
+    .replace(/&rdquo;/g, "\"")
+    .replace(/&lsquo;/g, "'")
+    .replace(/&rsquo;/g, "'")
     .replace(/&ndash;/g, "–")
+    .replace(/&mdash;/g, "—")
     .replace(/&pound;/g, "£")
     .replace(/&#39;/g, "'");
 }
