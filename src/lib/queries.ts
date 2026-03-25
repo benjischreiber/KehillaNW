@@ -151,7 +151,6 @@ export const mainNavCategoriesQuery = groq`
     _type == "category"
     && !(_id in path("drafts.**"))
     && defined(slug.current)
-    && !defined(parent)
     && showInMainNav == true
     && (!defined(visible) || visible == true)
     && count(*[
