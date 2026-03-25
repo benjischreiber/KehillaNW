@@ -12,6 +12,7 @@ const iconMap: Record<string, React.ReactNode> = {
   education: <GraduationCap className="h-4 w-4" />,
   community: <Users className="h-4 w-4" />,
   entertainment: <Sparkles className="h-4 w-4" />,
+  "outings-and-activities": <Sparkles className="h-4 w-4" />,
   recipes: <ChefHat className="h-4 w-4" />,
 };
 
@@ -44,7 +45,7 @@ const defaultCategories: Category[] = [
   { _id: "3", title: "Shopping", slug: { current: "shopping" }, colour: "purple", showInMainNav: true },
   { _id: "4", title: "Education", slug: { current: "education" }, colour: "orange", showInMainNav: true },
   { _id: "5", title: "Community", slug: { current: "community" }, colour: "teal", showInMainNav: true },
-  { _id: "6", title: "Entertainment", slug: { current: "entertainment" }, colour: "rose", showInMainNav: true },
+  { _id: "6", title: "Outings & Activities", slug: { current: "outings-and-activities" }, colour: "rose", showInMainNav: true },
 ];
 
 export default function CategoryNav({ categories }: CategoryNavProps) {

@@ -29,6 +29,7 @@ export interface Category {
   showInTopNav?: boolean;
   showInMainNav?: boolean;
   order?: number;
+  parentTitle?: string;
 }
 
 export interface Banner {

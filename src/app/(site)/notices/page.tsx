@@ -11,6 +11,41 @@ interface Props {
   searchParams: Promise<{ q?: string; category?: string }>;
 }
 
+async function getMatchingCategories(q?: string) {
+  if (!q) return [];
+
+  return client.fetch<Category[]>(
+    groq`*[
+      _type == "category"
+      && !(_id in path("drafts.**"))
+      && defined(slug.current)
+      && (!defined(visible) || visible == true)
+      && (
+        title match $q
+        || slug.current match $q
+      )
+      && count(*[
+        _type == "notice"
+        && !(_id in path("drafts.**"))
+        && (!defined(visible) || visible == true)
+        && (!defined(endDate) || endDate > now())
+        && (
+          category._ref == ^._id
+          || secondaryCategory._ref == ^._id
+        )
+      ]) > 0
+    ] | order(order asc, title asc){
+      _id,
+      title,
+      slug,
+      colour,
+      icon,
+      "parentTitle": parent->title,
+    }`,
+    { q: `*${q}*` }
+  ).catch(() => []);
+}
+
 async function getNotices(q?: string, category?: string) {
   if (q) {
     return client.fetch<Notice[]>(
@@ -42,11 +77,13 @@ async function getNotices(q?: string, category?: string) {
 export default async function NoticesPage({ searchParams }: Props) {
   const params = await searchParams;
   const { q, category } = params;
-  const [notices, categories] = await Promise.all([
+  const [notices, categories, matchingCategories] = await Promise.all([
     getNotices(q, category),
     client.fetch<Category[]>(mainNavCategoriesQuery).catch(() => []),
+    getMatchingCategories(q),
   ]);
   const safeCategories = categories.filter((cat) => !!cat?.slug?.current);
+  const safeMatchingCategories = matchingCategories.filter((cat) => !!cat?.slug?.current);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -92,6 +129,25 @@ export default async function NoticesPage({ searchParams }: Props) {
               {cat.title}
             </Link>
           ))}
+        </div>
+      )}
+
+      {q && safeMatchingCategories.length > 0 && (
+        <div className="mb-8">
+          <p className="text-sm font-semibold text-navy-700 mb-3">Matching categories</p>
+          <div className="flex flex-wrap gap-2">
+            {safeMatchingCategories.map((cat) => (
+              <Link
+                key={cat._id}
+                href={`/category/${cat.slug.current}`}
+                className="px-4 py-2 rounded-full bg-white text-navy-700 border border-gray-200 hover:border-navy-400 hover:bg-navy-50 transition-colors text-sm font-semibold"
+              >
+                {cat.icon && <span className="mr-1">{cat.icon}</span>}
+                {cat.title}
+                {cat.parentTitle && <span className="text-gray-400"> · {cat.parentTitle}</span>}
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
