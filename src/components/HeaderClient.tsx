@@ -11,12 +11,32 @@ interface HeaderClientProps {
   categories: Category[];
 }
 
+function normalizeCategories(categories: Category[]): Category[] {
+  if (!Array.isArray(categories)) return [];
+
+  return categories.flatMap((category) => {
+    const title = typeof category?.title === "string" ? category.title.trim() : "";
+    const slug = typeof category?.slug?.current === "string" ? category.slug.current.trim() : "";
+
+    if (!title || !slug) return [];
+
+    return [{
+      ...category,
+      title,
+      slug: { current: slug },
+      colour: typeof category?.colour === "string" ? category.colour : "navy",
+      icon: typeof category?.icon === "string" ? category.icon : undefined,
+    }];
+  });
+}
+
 export default function HeaderClient({ categories }: HeaderClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const safeCategories = normalizeCategories(categories);
 
   const activeCategory =
     searchParams.get("category") ||
@@ -66,7 +86,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
               Home
             </Link>
 
-            {categories.map((cat) => {
+            {safeCategories.map((cat) => {
               const slug = cat.slug.current;
               const isActive = activeCategory === slug;
               const solidClass = categoryColourMap[cat.colour || "navy"] || "bg-navy-600";
@@ -171,7 +191,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             <Home className="h-3 w-3" />
             Home
           </Link>
-          {categories.map((cat) => {
+          {safeCategories.map((cat) => {
             const slug = cat.slug.current;
             const isActive = activeCategory === slug;
             const solidClass = categoryColourMap[cat.colour || "navy"] || "bg-navy-600";

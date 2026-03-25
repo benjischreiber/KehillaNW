@@ -19,6 +19,25 @@ interface CategoryNavProps {
   categories?: Category[];
 }
 
+function normalizeCategories(categories?: Category[]): Category[] {
+  if (!Array.isArray(categories)) return [];
+
+  return categories.flatMap((category) => {
+    const title = typeof category?.title === "string" ? category.title.trim() : "";
+    const slug = typeof category?.slug?.current === "string" ? category.slug.current.trim() : "";
+
+    if (!title || !slug) return [];
+
+    return [{
+      ...category,
+      title,
+      slug: { current: slug },
+      colour: typeof category?.colour === "string" ? category.colour : "navy",
+      icon: typeof category?.icon === "string" ? category.icon : undefined,
+    }];
+  });
+}
+
 const defaultCategories: Category[] = [
   { _id: "1", title: "Government", slug: { current: "government" }, colour: "blue", showInMainNav: true },
   { _id: "2", title: "Support", slug: { current: "support" }, colour: "green", showInMainNav: true },
@@ -33,7 +52,8 @@ export default function CategoryNav({ categories }: CategoryNavProps) {
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get("category") || (pathname.startsWith("/category/") ? pathname.split("/category/")[1] : "all");
 
-  const navCategories = categories && categories.length > 0 ? categories : defaultCategories;
+  const navCategories = normalizeCategories(categories);
+  const visibleCategories = navCategories.length > 0 ? navCategories : defaultCategories;
 
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-[57px] z-40">
@@ -50,7 +70,7 @@ export default function CategoryNav({ categories }: CategoryNavProps) {
             <Grid3X3 className="h-4 w-4" />
             All Posts
           </Link>
-          {navCategories.map((cat) => {
+          {visibleCategories.map((cat) => {
             const isActive = activeCategory === cat.slug.current;
             const solidClass = cat.colour ? categoryColourMap[cat.colour] : "bg-navy-700";
             const tintClass = cat.colour ? categoryColourTintMap[cat.colour] : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
