@@ -7,6 +7,7 @@ export const noticeFields = groq`
   slug,
   summary,
   publishDate,
+  priority,
   eventDate,
   endDate,
   featured,
@@ -42,12 +43,12 @@ const activeNoticeVisibilityFilter = `
 
 export const featuredNoticesQuery = groq`
   *[_type == "notice" && featured == true && ${activeNoticeVisibilityFilter}]
-  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..7]{${noticeFields}}
+  | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..7]{${noticeFields}}
 `;
 
 export const recentNoticesQuery = groq`
   *[_type == "notice" && ${activeNoticeVisibilityFilter}]
-  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{${noticeFields}}
+  | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{${noticeFields}}
 `;
 
 export const upcomingEventsQuery = groq`
@@ -71,7 +72,7 @@ export const noticesByCategory = groq`
     (secondaryCategory->slug.current == $slug && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true)) ||
     (secondaryCategory->parent->slug.current == $slug && (!defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true))
   ) && ${activeNoticeVisibilityFilter}]
-  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
+  | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
 export const noticeBySlug = groq`
@@ -83,7 +84,7 @@ export const noticeBySlug = groq`
 
 export const allNoticesQuery = groq`
   *[_type == "notice" && ${activeNoticeVisibilityFilter}]
-  | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
+  | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..599]{${noticeFields}}
 `;
 
 export const activeBannersQuery = groq`

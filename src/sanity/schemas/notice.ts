@@ -48,6 +48,14 @@ export const noticeSchema = defineType({
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
+      name: "priority",
+      title: "Priority",
+      type: "number",
+      description: "Higher numbers appear higher in notice lists. Leave blank or 0 for normal ordering.",
+      initialValue: 0,
+      validation: (rule) => rule.min(0).integer(),
+    }),
+    defineField({
       name: "isEvent",
       title: "This is an event",
       type: "boolean",
@@ -175,6 +183,14 @@ export const noticeSchema = defineType({
       title: "Newest first",
       name: "publishDateDesc",
       by: [{ field: "publishDate", direction: "desc" }],
+    },
+    {
+      title: "Priority then newest",
+      name: "priorityThenPublishDateDesc",
+      by: [
+        { field: "priority", direction: "desc" },
+        { field: "publishDate", direction: "desc" },
+      ],
     },
   ],
 });

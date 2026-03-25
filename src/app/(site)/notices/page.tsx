@@ -15,8 +15,8 @@ async function getNotices(q?: string, category?: string) {
   if (q) {
     return client.fetch<Notice[]>(
       groq`*[_type == "notice" && !(_id in path("drafts.**")) && (title match $q || summary match $q) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
-      | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
-        _id, title, slug, summary, publishDate, featured, isEvent, externalLink, image,
+      | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
+        _id, title, slug, summary, publishDate, priority, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
         "categorySlug": category->slug.current,
         "categoryColour": category->colour,
@@ -27,8 +27,8 @@ async function getNotices(q?: string, category?: string) {
   if (category) {
     return client.fetch<Notice[]>(
       groq`*[_type == "notice" && !(_id in path("drafts.**")) && (category->slug.current == $cat || secondaryCategory->slug.current == $cat) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
-      | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
-        _id, title, slug, summary, publishDate, featured, isEvent, externalLink, image,
+      | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
+        _id, title, slug, summary, publishDate, priority, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
         "categorySlug": category->slug.current,
         "categoryColour": category->colour,
