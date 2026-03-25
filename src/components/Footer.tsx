@@ -18,7 +18,13 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-navy-600 py-2 text-center text-xs text-navy-300">
-        לעילוי נשמת ר׳ שלמה צבי בן ר׳ משה מרדכי גולקר ז׳ל &nbsp;·&nbsp; Mr Hershel Golker z&apos;l — ת.נ.צ.ב.ה
+        <div className="px-4 sm:hidden">
+          <div className="font-medium text-white/90">In memory of Mr Hershel Golker z&apos;l</div>
+          <div className="mt-1 leading-relaxed">לעילוי נשמת ר׳ שלמה צבי בן ר׳ משה מרדכי גולקר ז׳ל — ת.נ.צ.ב.ה</div>
+        </div>
+        <div className="hidden sm:block">
+          לעילוי נשמת ר׳ שלמה צבי בן ר׳ משה מרדכי גולקר ז׳ל &nbsp;·&nbsp; In memory of Mr Hershel Golker z&apos;l — ת.נ.צ.ב.ה
+        </div>
       </div>
     </footer>
   );
