@@ -22,6 +22,8 @@ export const noticeFields = groq`
 `;
 
 const activeNoticeVisibilityFilter = `
+  !(_id in path("drafts.**"))
+  &&
   (!defined(visible) || visible == true)
   && (!defined(endDate) || endDate > now())
   && (
@@ -29,13 +31,11 @@ const activeNoticeVisibilityFilter = `
       defined(category)
       && defined(category->_id)
       && (!defined(category->visible) || category->visible == true)
-      && (!defined(category->parent) || !defined(category->parent->visible) || category->parent->visible == true)
     )
     || (
       defined(secondaryCategory)
       && defined(secondaryCategory->_id)
       && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true)
-      && (!defined(secondaryCategory->parent) || !defined(secondaryCategory->parent->visible) || secondaryCategory->parent->visible == true)
     )
   )
 `;
@@ -105,7 +105,7 @@ export const allMazalTovQuery = groq`
 `;
 
 export const categoryWithParent = groq`
-  *[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{
+  *[_type == "category" && !(_id in path("drafts.**")) && slug.current == $slug && (!defined(visible) || visible == true)][0]{
     _id, title, colour,
     "parentSlug": parent->slug.current,
     "parentTitle": parent->title,
@@ -116,6 +116,8 @@ export const categoryWithParent = groq`
 export const subcategoriesForParent = groq`
   *[
     _type == "category"
+    && !(_id in path("drafts.**"))
+    && defined(slug.current)
     && parent->slug.current == $parentSlug
     && (!defined(visible) || visible == true)
     && count(*[
@@ -132,13 +134,38 @@ export const subcategoriesForParent = groq`
 `;
 
 export const topNavCategoriesQuery = groq`
-  *[_type == "category" && showInTopNav == true && (!defined(visible) || visible == true)] | order(order asc){
+  *[
+    _type == "category"
+    && !(_id in path("drafts.**"))
+    && defined(slug.current)
+    && showInTopNav == true
+    && (!defined(visible) || visible == true)
+  ] | order(order asc){
     _id, title, slug
   }
 `;
 
 export const mainNavCategoriesQuery = groq`
-  *[_type == "category" && showInMainNav == true && (!defined(visible) || visible == true)] | order(order asc){
+  *[
+    _type == "category"
+    && !(_id in path("drafts.**"))
+    && defined(slug.current)
+    && !defined(parent)
+    && showInMainNav == true
+    && (!defined(visible) || visible == true)
+    && count(*[
+      _type == "notice"
+      && !(_id in path("drafts.**"))
+      && (!defined(visible) || visible == true)
+      && (!defined(endDate) || endDate > now())
+      && (
+        category._ref == ^._id
+        || secondaryCategory._ref == ^._id
+        || category->parent._ref == ^._id
+        || secondaryCategory->parent._ref == ^._id
+      )
+    ]) > 0
+  ] | order(order asc){
     _id, title, slug, colour, icon
   }
 `;

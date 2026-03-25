@@ -14,7 +14,7 @@ interface Props {
 async function getNotices(q?: string, category?: string) {
   if (q) {
     return client.fetch<Notice[]>(
-      groq`*[_type == "notice" && (title match $q || summary match $q) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+      groq`*[_type == "notice" && !(_id in path("drafts.**")) && (title match $q || summary match $q) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
       | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
         _id, title, slug, summary, publishDate, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
@@ -26,7 +26,7 @@ async function getNotices(q?: string, category?: string) {
   }
   if (category) {
     return client.fetch<Notice[]>(
-      groq`*[_type == "notice" && (category->slug.current == $cat || secondaryCategory->slug.current == $cat) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+      groq`*[_type == "notice" && !(_id in path("drafts.**")) && (category->slug.current == $cat || secondaryCategory->slug.current == $cat) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
       | order(coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
         _id, title, slug, summary, publishDate, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
@@ -46,6 +46,7 @@ export default async function NoticesPage({ searchParams }: Props) {
     getNotices(q, category),
     client.fetch<Category[]>(mainNavCategoriesQuery).catch(() => []),
   ]);
+  const safeCategories = categories.filter((cat) => !!cat?.slug?.current);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -67,7 +68,7 @@ export default async function NoticesPage({ searchParams }: Props) {
       </div>
 
       {/* Category filter chips */}
-      {categories.length > 0 && !q && (
+      {safeCategories.length > 0 && !q && (
         <div className="flex flex-wrap gap-2 mb-8">
           <Link
             href="/notices"
@@ -77,7 +78,7 @@ export default async function NoticesPage({ searchParams }: Props) {
           >
             All
           </Link>
-          {categories.map((cat) => (
+          {safeCategories.map((cat) => (
             <Link
               key={cat._id}
               href={`/category/${cat.slug.current}`}
