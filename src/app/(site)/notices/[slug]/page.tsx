@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = `/notices/${slug}`;
   const image = notice.image
     ? urlFor(notice.image).width(1200).height(630).fit("crop").url()
-    : `${canonical}/opengraph-image`;
+    : undefined;
 
   return {
     title,
@@ -39,20 +39,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "KehillaNW.org",
       title,
       description,
-      images: [
-        {
-          url: image,
-          width: notice.image ? 1200 : 1085,
-          height: notice.image ? 630 : 629,
-          alt: title,
-        },
-      ],
+      ...(image
+        ? {
+            images: [
+              {
+                url: image,
+                width: 1200,
+                height: 630,
+                alt: title,
+              },
+            ],
+          }
+        : {}),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [image],
+      ...(image ? { images: [image] } : {}),
     },
   };
 }
