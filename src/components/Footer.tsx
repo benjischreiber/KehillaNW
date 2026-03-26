@@ -5,7 +5,6 @@ export default function Footer() {
     <footer className="bg-navy-700 text-white">
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="bg-gold-400 text-navy-900 font-bold text-xs px-2 py-0.5 rounded">KNW</div>
           <span className="font-semibold text-sm">KehillaNW.org</span>
           <span className="text-navy-300 text-sm hidden sm:inline">· Home of the NW London Kehilla</span>
         </div>
