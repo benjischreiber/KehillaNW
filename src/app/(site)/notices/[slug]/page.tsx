@@ -5,6 +5,7 @@ import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { PortableText } from "next-sanity";
 import { ExternalLink, ArrowLeft, Tag, FileText, Calendar } from "lucide-react";
 import { decodeHtmlEntities, decodePortableTextValue, formatDateTime } from "@/lib/utils";
@@ -15,13 +16,36 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const notice = await client.fetch<Notice>(noticeBySlug, { slug }).catch(() => null);
   if (!notice) return { title: "Notice Not Found" };
+
+  const title = decodeHtmlEntities(notice.title);
+  const description = notice.summary ? decodeHtmlEntities(notice.summary) : title;
+  const image = notice.image ? urlFor(notice.image).width(1200).height(630).fit("crop").url() : "/logo.png";
+
   return {
-    title: notice.title,
-    description: notice.summary || notice.title,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+          width: notice.image ? 1200 : 1085,
+          height: notice.image ? 630 : 629,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
   };
 }
 

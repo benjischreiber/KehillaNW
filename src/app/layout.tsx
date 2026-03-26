@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description:
     "Community notices, events, and information for the NW London Jewish community — Golders Green, Hendon, and beyond.",
   icons: {
-    icon: "/logosmall.png",
-    apple: "/logosmall.png",
-    shortcut: "/logosmall.png",
+    icon: "/icon.png",
+    apple: "/icon.png",
+    shortcut: "/icon.png",
   },
   openGraph: {
     title: "KehillaNW.org — Home of the NW London Kehilla",
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     siteName: "KehillaNW.org",
     images: [
       {
-        url: "/logosmall.png",
-        width: 1536,
-        height: 1024,
+        url: "/logo.png",
+        width: 1085,
+        height: 629,
         alt: "KehillaNW.org",
       },
     ],
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "KehillaNW.org — Home of the NW London Kehilla",
     description:
       "Community notices, events, and information for the NW London Jewish community — Golders Green, Hendon, and beyond.",
-    images: ["/logosmall.png"],
+    images: ["/logo.png"],
   },
 };
 

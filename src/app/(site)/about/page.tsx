@@ -1,7 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = { title: "About KehillaNW" };
+export const metadata: Metadata = {
+  title: "About KehillaNW",
+  description:
+    "Learn about KehillaNW.org, the NW London Jewish community noticeboard for Golders Green, Hendon, and beyond.",
+  openGraph: {
+    title: "About KehillaNW",
+    description:
+      "Learn about KehillaNW.org, the NW London Jewish community noticeboard for Golders Green, Hendon, and beyond.",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1085,
+        height: 629,
+        alt: "KehillaNW.org",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/logo.png"],
+  },
+};
 
 export default function AboutPage() {
   return (
