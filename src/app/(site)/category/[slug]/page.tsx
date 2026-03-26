@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { groq } from "next-sanity";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { urlFor } from "@/sanity/lib/image";
 
 export const revalidate = 300;
 
@@ -46,29 +47,42 @@ function dedupeSubcategories(items: SubCat[], parentTitle?: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const cat = await client
-    .fetch<{ title: string; parentTitle?: string }>(
-      groq`*[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{ title, "parentTitle": parent->title }`,
-      { slug }
-    )
-    .catch(() => null);
+  const [cat, notices] = await Promise.all([
+    client
+      .fetch<{ title: string; parentTitle?: string }>(
+        groq`*[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{ title, "parentTitle": parent->title }`,
+        { slug }
+      )
+      .catch(() => null),
+    client.fetch<Notice[]>(noticesByCategory, { slug }).catch(() => []),
+  ]);
   const title = cat?.title || slug.replace(/-/g, " ");
   const parentTitle = cat?.parentTitle;
   const description = parentTitle
     ? `${title} notices from the ${parentTitle} section on KehillaNW.org.`
     : `${title} notices and community updates on KehillaNW.org.`;
+  const canonical = `/category/${slug}`;
+  const leadNoticeWithImage = notices.find((notice) => notice.image);
+  const image = leadNoticeWithImage?.image
+    ? urlFor(leadNoticeWithImage.image).width(1200).height(630).fit("crop").url()
+    : "/logo.png";
 
   return {
     title,
     description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
+      url: canonical,
+      siteName: "KehillaNW.org",
       title,
       description,
       images: [
         {
-          url: "/logo.png",
-          width: 1085,
-          height: 629,
+          url: image,
+          width: leadNoticeWithImage?.image ? 1200 : 1085,
+          height: leadNoticeWithImage?.image ? 630 : 629,
           alt: title,
         },
       ],
@@ -77,7 +91,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: ["/logo.png"],
+      images: [image],
     },
   };
 }
