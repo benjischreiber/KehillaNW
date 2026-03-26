@@ -1,27 +1,25 @@
 import { ImageResponse } from "next/og";
+import { NextRequest } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { noticeBySlug } from "@/lib/queries";
 import { Notice } from "@/lib/types";
 import { decodeHtmlEntities } from "@/lib/utils";
 
 export const runtime = "nodejs";
-export const revalidate = 300;
-export const size = {
-  width: 1200,
-  height: 630,
-};
-export const contentType = "image/png";
 
-export default async function OpenGraphImage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export async function GET(request: NextRequest) {
+  const slug = request.nextUrl.searchParams.get("slug");
+
+  if (!slug) {
+    return new Response("Missing slug", { status: 400 });
+  }
+
   const notice = await client.fetch<Notice>(noticeBySlug, { slug }).catch(() => null);
 
   const title = decodeHtmlEntities(notice?.title || "KehillaNW.org");
-  const summary = decodeHtmlEntities(notice?.summary || "Notices, events and useful info for the NW London Jewish community.");
+  const summary = decodeHtmlEntities(
+    notice?.summary || "Notices, events and useful info for the NW London Jewish community."
+  );
   const category = notice?.categoryTitle || "KehillaNW.org";
 
   return new ImageResponse(
@@ -74,7 +72,6 @@ export default async function OpenGraphImage({
                 padding: 18,
               }}
             >
-              {/* Use the uploaded favicon as the site mark */}
               <img
                 src="https://www.kehillanw.org/favicon.png"
                 alt=""
@@ -163,7 +160,8 @@ export default async function OpenGraphImage({
       </div>
     ),
     {
-      ...size,
+      width: 1200,
+      height: 630,
     }
   );
 }
