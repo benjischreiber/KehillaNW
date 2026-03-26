@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { groq } from "next-sanity";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 export const revalidate = 300;
 
@@ -43,16 +44,41 @@ function dedupeSubcategories(items: SubCat[], parentTitle?: string) {
   });
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const cat = await client
-    .fetch<{ title: string }>(
-      groq`*[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{ title }`,
+    .fetch<{ title: string; parentTitle?: string }>(
+      groq`*[_type == "category" && slug.current == $slug && (!defined(visible) || visible == true)][0]{ title, "parentTitle": parent->title }`,
       { slug }
     )
     .catch(() => null);
+  const title = cat?.title || slug.replace(/-/g, " ");
+  const parentTitle = cat?.parentTitle;
+  const description = parentTitle
+    ? `${title} notices from the ${parentTitle} section on KehillaNW.org.`
+    : `${title} notices and community updates on KehillaNW.org.`;
+
   return {
-    title: cat?.title || slug.replace(/-/g, " "),
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: "/logo.png",
+          width: 1085,
+          height: 629,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/logo.png"],
+    },
   };
 }
 
