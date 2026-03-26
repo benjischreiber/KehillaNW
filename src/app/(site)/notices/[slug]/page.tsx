@@ -23,12 +23,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = decodeHtmlEntities(notice.title);
   const description = notice.summary ? decodeHtmlEntities(notice.summary) : title;
-  const image = notice.image ? urlFor(notice.image).width(1200).height(630).fit("crop").url() : "/logo.png";
+  const canonical = `/notices/${slug}`;
+  const image = notice.image
+    ? urlFor(notice.image).width(1200).height(630).fit("crop").url()
+    : `${canonical}/opengraph-image`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
+      url: canonical,
+      siteName: "KehillaNW.org",
       title,
       description,
       images: [
