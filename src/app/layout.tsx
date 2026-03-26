@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: "KehillaNW.org",
   description: "Notices, events and useful info for the NW London Jewish community.",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 
