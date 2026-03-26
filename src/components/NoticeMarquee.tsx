@@ -13,10 +13,12 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
   const rafRef = useRef<number>(0);
   const pausedRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const shouldLoop = notices.length > 1;
+  const items = shouldLoop ? [...notices, ...notices] : notices;
 
   useEffect(() => {
     const scroller = scrollerRef.current;
-    if (!scroller || notices.length <= 1) {
+    if (!scroller || !shouldLoop) {
       return;
     }
 
@@ -30,13 +32,12 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
 
     const tick = () => {
       if (!pausedRef.current) {
-        const maxScroll = scroller.scrollWidth - scroller.clientWidth;
-        if (maxScroll > 0) {
-          if (scroller.scrollLeft >= maxScroll - 1) {
-            scroller.scrollLeft = 0;
-          } else {
-            scroller.scrollLeft += AUTO_SCROLL_STEP;
+        const loopWidth = scroller.scrollWidth / 2;
+        if (loopWidth > 0) {
+          if (scroller.scrollLeft >= loopWidth) {
+            scroller.scrollLeft -= loopWidth;
           }
+          scroller.scrollLeft += AUTO_SCROLL_STEP;
         }
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -72,7 +73,7 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
       scroller.removeEventListener("mouseenter", handleMouseEnter);
       scroller.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [notices.length]);
+  }, [shouldLoop]);
 
   if (!notices.length) return null;
 
@@ -103,14 +104,14 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
 
       <div
         ref={scrollerRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth pb-3 scrollbar-hide snap-x snap-mandatory touch-pan-x"
+        className="flex gap-4 overflow-x-auto scroll-smooth pb-3 scrollbar-hide touch-pan-x"
         style={{
           WebkitOverflowScrolling: "touch",
           maskImage: "linear-gradient(to right, black 92%, transparent)",
         }}
       >
-        {notices.map((notice) => (
-          <div key={notice._id} className="w-64 shrink-0 snap-start sm:w-72 lg:w-80">
+        {items.map((notice, index) => (
+          <div key={`${notice._id}-${index}`} className="w-64 shrink-0 sm:w-72 lg:w-80">
             <NoticeCard notice={notice} size="lg" />
           </div>
         ))}
