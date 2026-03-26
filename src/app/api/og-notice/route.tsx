@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     notice?.summary || "Notices, events and useful info for the NW London Jewish community."
   );
   const category = notice?.categoryTitle || "KehillaNW.org";
+  const hasPdf = !!notice?.pdfUrl;
 
   return new ImageResponse(
     (
@@ -110,6 +111,26 @@ export async function GET(request: NextRequest) {
                 KehillaNW.org
               </div>
             </div>
+            {hasPdf && (
+              <div
+                style={{
+                  display: "flex",
+                  marginLeft: "auto",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 999,
+                  background: "#ffffff",
+                  border: "2px solid #e2e8f0",
+                  color: "#1f5aa5",
+                  fontSize: 24,
+                  fontWeight: 800,
+                  padding: "12px 22px",
+                  boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
+                }}
+              >
+                PDF Attached
+              </div>
+            )}
           </div>
 
           <div
@@ -140,7 +161,7 @@ export async function GET(request: NextRequest) {
                 maxWidth: 920,
               }}
             >
-              {summary}
+              {hasPdf ? `${summary} Open the notice to view the attached PDF.` : summary}
             </div>
           </div>
 
