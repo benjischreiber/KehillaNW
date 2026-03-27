@@ -26,7 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = `/notices/${slug}`;
   const image = notice.image
     ? urlFor(notice.image).width(1200).height(630).fit("crop").url()
-    : `https://www.kehillanw.org/api/og-notice?slug=${encodeURIComponent(slug)}`;
+    : notice.pdfUrl
+      ? `https://www.kehillanw.org/api/pdf-thumbnail?slug=${encodeURIComponent(slug)}`
+      : `https://www.kehillanw.org/api/og-notice?slug=${encodeURIComponent(slug)}`;
 
   return {
     title,

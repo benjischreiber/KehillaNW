@@ -10,12 +10,14 @@
     "fix-dates": "node scripts/fix-dates.mjs"
   },
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.97",
     "@sanity/image-url": "^2.0.3",
     "@sanity/vision": "^5.12.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",
     "next-sanity": "^12.1.0",
+    "pdfjs-dist": "^5.5.207",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
