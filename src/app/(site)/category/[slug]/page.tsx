@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = `/category/${slug}`;
   const leadNoticeWithImage = notices.find((notice) => notice.image);
   const image = leadNoticeWithImage?.image
-    ? urlFor(leadNoticeWithImage.image).width(1200).height(630).fit("crop").url()
+    ? urlFor(leadNoticeWithImage.image).width(1200).height(630).fit("crop").format("jpg").quality(80).url()
     : "/logo.png";
 
   return {

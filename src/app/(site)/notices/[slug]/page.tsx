@@ -24,8 +24,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = decodeHtmlEntities(notice.title);
   const description = notice.summary ? decodeHtmlEntities(notice.summary) : title;
   const canonical = `/notices/${slug}`;
+  const firstContentImage = Array.isArray(notice.content)
+    ? notice.content.find(
+        (block): block is { _type: "image"; asset: { _ref: string; _type: "reference" } } =>
+          !!block && typeof block === "object" && block._type === "image" && !!block.asset?._ref
+      )
+    : undefined;
   const image = notice.image
-    ? urlFor(notice.image).width(1200).height(630).fit("crop").url()
+    ? urlFor(notice.image).width(1200).height(630).fit("crop").format("jpg").quality(80).url()
+    : firstContentImage
+      ? urlFor(firstContentImage).width(1200).height(630).fit("crop").format("jpg").quality(80).url()
     : notice.pdfUrl
       ? `https://www.kehillanw.org/api/pdf-thumbnail?slug=${encodeURIComponent(slug)}`
       : `https://www.kehillanw.org/api/og-notice?slug=${encodeURIComponent(slug)}`;
