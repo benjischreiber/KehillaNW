@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     description: "Notices, events and useful info for the NW London Jewish community.",
     images: [
       {
-        url: "/logo.png",
-        width: 1085,
-        height: 629,
+        url: "/api/og-home",
+        width: 1200,
+        height: 630,
         alt: "KehillaNW.org",
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KehillaNW.org",
     description: "Notices, events and useful info for the NW London Jewish community.",
-    images: ["/logo.png"],
+    images: ["/api/og-home"],
   },
 };
 
