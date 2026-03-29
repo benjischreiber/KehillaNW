@@ -165,14 +165,6 @@ export default async function NoticesPage({ searchParams }: Props) {
         </div>
       )}
 
-      {events === "upcoming" && (
-        <div className="mb-8">
-          <p className="text-sm text-gray-600">
-            Showing upcoming notices with dates, ordered soonest first.
-          </p>
-        </div>
-      )}
-
       {q && safeMatchingCategories.length > 0 && (
         <div className="mb-8">
           <p className="text-sm font-semibold text-navy-700 mb-3">Matching categories</p>
