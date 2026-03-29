@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Notice } from "@/lib/types";
 import NoticeCard from "./NoticeCard";
 
@@ -15,7 +15,22 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
   const rafRef = useRef<number>(0);
   const pausedRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const shouldLoop = notices.length > 6;
+  const [enableAutoScroll, setEnableAutoScroll] = useState(false);
+  const shouldLoop = enableAutoScroll && notices.length > 6;
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+
+    const media = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setEnableAutoScroll(media.matches);
+
+    update();
+    media.addEventListener?.("change", update);
+
+    return () => {
+      media.removeEventListener?.("change", update);
+    };
+  }, []);
 
   useEffect(() => {
     if (!notices.length || !shouldLoop) return;
@@ -79,6 +94,7 @@ export default function NoticeScrollUp({ notices }: { notices: Notice[] }) {
       style={{
         height: "72vh",
         overflowY: shouldLoop ? "hidden" : "auto",
+        WebkitOverflowScrolling: "touch",
         maskImage: "linear-gradient(to bottom, black 90%, transparent)",
       }}
     >
