@@ -14,6 +14,7 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
   const rafRef = useRef<number>(0);
   const pausedRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollPosRef = useRef(0);
   const [fadeLeft, setFadeLeft] = useState(false);
   const [fadeRight, setFadeRight] = useState(notices.length > 1);
   const shouldLoop = notices.length > 1;
@@ -26,6 +27,7 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
     }
 
     const updateFadeState = () => {
+      scrollPosRef.current = scroller.scrollLeft;
       const maxScrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
       const atStart = scroller.scrollLeft <= 4;
       const atEnd = scroller.scrollLeft >= maxScrollLeft - 4;
@@ -57,11 +59,12 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
       if (!pausedRef.current) {
         const loopWidth = scroller.scrollWidth / 2;
         if (loopWidth > 0) {
-          if (scroller.scrollLeft >= loopWidth) {
-            scroller.scrollLeft -= loopWidth;
+          if (scrollPosRef.current >= loopWidth) {
+            scrollPosRef.current -= loopWidth;
           }
-          scroller.scrollLeft += AUTO_SCROLL_STEP;
-          const normalized = scroller.scrollLeft % loopWidth;
+          scrollPosRef.current += AUTO_SCROLL_STEP;
+          scroller.scrollLeft = scrollPosRef.current;
+          const normalized = scrollPosRef.current % loopWidth;
           setFadeLeft(normalized > 4);
           setFadeRight(normalized < loopWidth - scroller.clientWidth - 4);
         }
@@ -110,6 +113,7 @@ export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
     if (!scroller) return;
     pausedRef.current = true;
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    scrollPosRef.current = scroller.scrollLeft;
     scroller.scrollBy({
       left: direction * Math.min(scroller.clientWidth * 0.9, 420),
       behavior: "smooth",
