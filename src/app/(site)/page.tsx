@@ -73,46 +73,6 @@ export default async function HomePage() {
 
       {/* Main content */}
       <div className="max-w-7xl mx-auto px-4 py-10">
-        {upcomingEvents.length > 0 && (
-          <section className="mb-10">
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h2 className="text-2xl font-bold text-navy-900">
-                  Coming <span className="text-gold-500">Up</span>
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Dated notices, in order, so upcoming events are easy to scan.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-              {upcomingEvents.slice(0, 4).map((event) => (
-                <Link
-                  key={event._id}
-                  href={`/notices/${event.slug?.current}`}
-                  className="group bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
-                >
-                  <div className="flex items-center gap-2 text-gold-600 text-sm font-bold mb-3 uppercase tracking-wide">
-                    <CalendarDays className="h-4 w-4" />
-                    {formatEventDate(event.eventDate || event.publishDate)}
-                  </div>
-                  <h3 className="text-lg font-bold text-navy-900 leading-tight mb-2 group-hover:text-gold-600 transition-colors">
-                    {event.title}
-                  </h3>
-                  {event.categoryTitle && (
-                    <p className="text-sm text-gray-500 mb-4">{event.categoryTitle}</p>
-                  )}
-                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-navy-700 group-hover:text-gold-600 transition-colors">
-                    View event
-                    <ArrowRight className="h-4 w-4" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* Recent notices — full width 3-column grid */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-navy-900">
@@ -144,6 +104,41 @@ export default async function HomePage() {
               View all notices
             </Link>
           </div>
+        )}
+
+        {upcomingEvents.length > 0 && (
+          <section className="mt-12 mb-2">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-2xl font-bold text-navy-900">
+                Coming <span className="text-gold-500">Up</span>
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              {upcomingEvents.slice(0, 4).map((event) => (
+                <Link
+                  key={event._id}
+                  href={`/notices/${event.slug?.current}`}
+                  className="group bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="flex items-center gap-2 text-gold-600 text-sm font-bold mb-3 uppercase tracking-wide">
+                    <CalendarDays className="h-4 w-4" />
+                    {formatEventDate(event.eventDate || event.publishDate)}
+                  </div>
+                  <h3 className="text-lg font-bold text-navy-900 leading-tight mb-2 group-hover:text-gold-600 transition-colors">
+                    {event.title}
+                  </h3>
+                  {event.categoryTitle && (
+                    <p className="text-sm text-gray-500 mb-4">{event.categoryTitle}</p>
+                  )}
+                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-navy-700 group-hover:text-gold-600 transition-colors">
+                    View event
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Widget row below notices */}
