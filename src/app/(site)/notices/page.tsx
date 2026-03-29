@@ -8,7 +8,7 @@ import { groq } from "next-sanity";
 export const revalidate = 300;
 
 interface Props {
-  searchParams: Promise<{ q?: string; category?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; events?: string }>;
 }
 
 async function getMatchingCategories(q?: string) {
@@ -46,7 +46,7 @@ async function getMatchingCategories(q?: string) {
   ).catch(() => []);
 }
 
-async function getNotices(q?: string, category?: string) {
+async function getNotices(q?: string, category?: string, events?: string) {
   if (q) {
     return client.fetch<Notice[]>(
       groq`*[_type == "notice" && !(_id in path("drafts.**")) && (title match $q || summary match $q) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
@@ -57,6 +57,37 @@ async function getNotices(q?: string, category?: string) {
         "categoryColour": category->colour,
       }`,
       { q: `*${q}*` }
+    ).catch(() => []);
+  }
+  if (events === "upcoming") {
+    return client.fetch<Notice[]>(
+      groq`*[
+        _type == "notice"
+        && !(_id in path("drafts.**"))
+        && isEvent == true
+        && (!defined(visible) || visible == true)
+        && (!defined(endDate) || endDate > now())
+        && (
+          (
+            defined(category)
+            && defined(category->_id)
+            && (!defined(category->visible) || category->visible == true)
+          )
+          || (
+            defined(secondaryCategory)
+            && defined(secondaryCategory->_id)
+            && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true)
+          )
+        )
+        && coalesce(eventDate, publishDate) > now()
+      ]
+      | order(coalesce(eventDate, publishDate) asc)[0..99]{
+        _id, title, slug, summary, publishDate, priority, eventDate, featured, isEvent, externalLink, image,
+        "categoryTitle": category->title,
+        "categorySlug": category->slug.current,
+        "categoryColour": category->colour,
+      }`,
+      {}
     ).catch(() => []);
   }
   if (category) {
@@ -76,9 +107,9 @@ async function getNotices(q?: string, category?: string) {
 
 export default async function NoticesPage({ searchParams }: Props) {
   const params = await searchParams;
-  const { q, category } = params;
+  const { q, category, events } = params;
   const [notices, categories, matchingCategories] = await Promise.all([
-    getNotices(q, category),
+    getNotices(q, category, events),
     client.fetch<Category[]>(mainNavCategoriesQuery).catch(() => []),
     getMatchingCategories(q),
   ]);
@@ -91,13 +122,15 @@ export default async function NoticesPage({ searchParams }: Props) {
         <h1 className="text-3xl font-bold text-navy-900">
           {q ? (
             <>Search: <span className="text-gold-500">{q}</span></>
+          ) : events === "upcoming" ? (
+            <>Upcoming <span className="text-gold-500">Events</span></>
           ) : category ? (
             <>Category: <span className="text-gold-500 capitalize">{category.replace(/-/g, " ")}</span></>
           ) : (
             <>All <span className="text-gold-500">Notices</span></>
           )}
         </h1>
-        {(q || category) && (
+        {(q || category || events) && (
           <Link href="/notices" className="text-sm text-navy-700 hover:text-gold-600 font-semibold transition-colors">
             ← All notices
           </Link>
@@ -105,7 +138,7 @@ export default async function NoticesPage({ searchParams }: Props) {
       </div>
 
       {/* Category filter chips */}
-      {safeCategories.length > 0 && !q && (
+      {safeCategories.length > 0 && !q && events !== "upcoming" && (
         <div className="flex flex-wrap gap-2 mb-8">
           <Link
             href="/notices"
@@ -129,6 +162,14 @@ export default async function NoticesPage({ searchParams }: Props) {
               {cat.title}
             </Link>
           ))}
+        </div>
+      )}
+
+      {events === "upcoming" && (
+        <div className="mb-8">
+          <p className="text-sm text-gray-600">
+            Showing upcoming notices with dates, ordered soonest first.
+          </p>
         </div>
       )}
 
