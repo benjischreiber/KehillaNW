@@ -61,9 +61,10 @@ export default function FeaturedCarousel({ notices }: FeaturedCarouselProps) {
       >
         {notice.image ? (
           <Image
-            src={urlFor(notice.image).width(1400).height(520).url()}
+            src={urlFor(notice.image).width(1200).height(450).format("jpg").quality(74).url()}
             alt={notice.title}
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />

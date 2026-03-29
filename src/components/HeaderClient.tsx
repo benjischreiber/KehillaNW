@@ -137,6 +137,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             alt="KehillaNW — Connecting Our Community"
             width={300}
             height={240}
+            unoptimized
             className="w-auto"
             style={{ height: "100%", maxHeight: "100%", width: "auto" }}
             priority
@@ -152,6 +153,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
               alt="KehillaNW"
               width={120}
               height={96}
+              unoptimized
               className="h-12 w-auto rounded-lg"
               priority
             />

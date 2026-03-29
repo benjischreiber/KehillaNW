@@ -131,9 +131,10 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         <div className="relative h-[208px] w-full overflow-hidden shrink-0">
           {notice.image ? (
             <Image
-              src={urlFor(notice.image).width(600).height(400).url()}
+              src={urlFor(notice.image).width(480).height(320).format("jpg").quality(72).url()}
               alt={decodedTitle}
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 18rem, 20rem"
               className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
             />
           ) : notice.pdfUrl ? (
@@ -176,9 +177,10 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
         {notice.image ? (
           <div className="relative h-14 w-14 rounded-lg overflow-hidden shrink-0">
             <Image
-              src={urlFor(notice.image).width(100).height(100).url()}
+              src={urlFor(notice.image).width(96).height(96).format("jpg").quality(70).url()}
               alt={decodedTitle}
               fill
+              sizes="56px"
               className="object-cover"
             />
           </div>
@@ -210,19 +212,21 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
       {notice.image ? (
         <div className="relative h-20 w-20 rounded-lg overflow-hidden shrink-0">
           <Image
-            src={urlFor(notice.image).width(160).height(160).url()}
+            src={urlFor(notice.image).width(120).height(120).format("jpg").quality(70).url()}
             alt={notice.title}
             fill
+            sizes="80px"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
       ) : notice.pdfUrl ? (
-        <div className="relative h-20 w-20 rounded-lg overflow-hidden shrink-0 bg-white border border-gray-100">
-          <iframe
-            src={`${notice.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&page=1&view=FitH`}
-            title={`${decodedTitle} PDF preview`}
-            className="h-full w-full border-0 pointer-events-none"
-          />
+        <div className={`h-20 w-20 rounded-lg shrink-0 p-2 flex flex-col justify-between ${placeholderBg}`}>
+          <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/75">
+            PDF
+          </span>
+          <span className="line-clamp-3 text-xs font-semibold leading-tight text-white">
+            {decodedSummary || decodedTitle}
+          </span>
         </div>
       ) : (
         <div className={`h-20 w-20 rounded-lg shrink-0 p-2 flex flex-col justify-between ${placeholderBg}`}>

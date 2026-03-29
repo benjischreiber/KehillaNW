@@ -59,9 +59,10 @@ export default async function HomePage() {
               >
                 <div className="relative h-24 sm:h-32 w-full">
                   <Image
-                    src={urlFor(banner.image).width(1200).height(200).url()}
+                    src={urlFor(banner.image).width(1200).height(200).format("jpg").quality(72).url()}
                     alt={banner.title}
                     fill
+                    sizes="100vw"
                     className="object-cover"
                   />
                 </div>
