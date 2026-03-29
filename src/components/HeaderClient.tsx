@@ -130,16 +130,15 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
 
         <Link
           href="/"
-          className="shrink-0 self-stretch hover:opacity-90 transition-opacity flex items-center bg-white/70 backdrop-blur-sm rounded-2xl px-2"
+          className="shrink-0 hover:opacity-90 transition-opacity flex items-center justify-center bg-white/70 backdrop-blur-sm rounded-2xl px-3 py-2 w-[320px] xl:w-[360px] max-w-[38vw] self-center"
         >
           <Image
             src="/logo.png"
             alt="KehillaNW — Connecting Our Community"
-            width={300}
-            height={240}
+            width={360}
+            height={210}
             unoptimized
-            className="w-auto"
-            style={{ height: "100%", maxHeight: "100%", width: "auto" }}
+            className="h-auto w-full max-h-[180px] object-contain"
             priority
           />
         </Link>
