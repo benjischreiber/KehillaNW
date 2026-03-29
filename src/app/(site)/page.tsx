@@ -112,6 +112,12 @@ export default async function HomePage() {
               <h2 className="text-2xl font-bold text-navy-900">
                 Coming <span className="text-gold-500">Up</span>
               </h2>
+              <Link
+                href="/notices?events=upcoming"
+                className="text-sm font-semibold text-navy-700 hover:text-gold-600 transition-colors"
+              >
+                View all upcoming events →
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
