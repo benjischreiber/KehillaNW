@@ -17,7 +17,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <main
         className="site-shell-main flex-1 relative"
         style={{
-          backgroundImage: "url('/street.png')",
+          backgroundImage: "url('/street.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center 30%",
           backgroundAttachment: "fixed",
