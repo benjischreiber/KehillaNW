@@ -8,7 +8,6 @@ import {
 import { Notice, Banner, MazalTov } from "@/lib/types";
 import NoticeMarquee from "@/components/NoticeMarquee";
 import MazalTovSection from "@/components/MazalTovSection";
-import UpcomingTicker from "@/components/UpcomingTicker";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
@@ -43,8 +42,6 @@ export default async function HomePage() {
 
   return (
     <>
-      {upcomingEvents.length > 0 && <UpcomingTicker events={upcomingEvents} />}
-
       {/* Banner ads */}
       {banners.length > 0 && (
         <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100 py-4">
