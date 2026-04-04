@@ -63,6 +63,7 @@ export default async function HomePage() {
                     alt={banner.title}
                     fill
                     sizes="100vw"
+                    unoptimized
                     className="object-cover"
                   />
                 </div>

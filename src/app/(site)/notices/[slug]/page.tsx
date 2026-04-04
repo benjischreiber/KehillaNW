@@ -105,6 +105,7 @@ export default async function NoticePage({ params }: Props) {
             alt={notice.title}
             width={900}
             height={600}
+            unoptimized
             style={{ width: "100%", height: "auto" }}
             className="block"
             priority
@@ -187,6 +188,7 @@ export default async function NoticePage({ params }: Props) {
                           alt={value.alt || ""}
                           width={800}
                           height={500}
+                          unoptimized
                           className="w-full object-cover rounded-xl"
                         />
                       </div>

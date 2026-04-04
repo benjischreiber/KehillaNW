@@ -135,6 +135,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
               alt={decodedTitle}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 18rem, 20rem"
+              unoptimized
               className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
             />
           ) : notice.pdfUrl ? (
@@ -181,6 +182,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
               alt={decodedTitle}
               fill
               sizes="56px"
+              unoptimized
               className="object-cover"
             />
           </div>
@@ -216,6 +218,7 @@ export default function NoticeCard({ notice, size = "md" }: NoticeCardProps) {
             alt={notice.title}
             fill
             sizes="80px"
+            unoptimized
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>

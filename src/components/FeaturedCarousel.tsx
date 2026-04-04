@@ -65,6 +65,7 @@ export default function FeaturedCarousel({ notices }: FeaturedCarouselProps) {
             alt={notice.title}
             fill
             sizes="100vw"
+            unoptimized
             className="object-cover"
             priority
           />
