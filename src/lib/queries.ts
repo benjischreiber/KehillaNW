@@ -93,18 +93,6 @@ export const activeBannersQuery = groq`
   }
 `;
 
-export const mazalTovQuery = groq`
-  *[_type == "mazalTov" && visible == true] | order(publishDate desc)[0..9]{
-    _id, content, publishDate
-  }
-`;
-
-export const allMazalTovQuery = groq`
-  *[_type == "mazalTov" && visible == true] | order(publishDate desc)[0..199]{
-    _id, content, publishDate
-  }
-`;
-
 export const categoryWithParent = groq`
   *[_type == "category" && !(_id in path("drafts.**")) && slug.current == $slug && (!defined(visible) || visible == true)][0]{
     _id, title, colour,

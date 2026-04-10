@@ -39,12 +39,6 @@ export interface Banner {
   link?: string;
 }
 
-export interface MazalTov {
-  _id: string;
-  content: string;
-  publishDate: string;
-}
-
 export interface SanityImage {
   _type: "image";
   asset: {
