@@ -1,13 +1,7 @@
 import { client } from "@/sanity/lib/client";
-import {
-  recentNoticesQuery,
-  activeBannersQuery,
-  mazalTovQuery,
-  upcomingEventsQuery,
-} from "@/lib/queries";
-import { Notice, Banner, MazalTov } from "@/lib/types";
+import { recentNoticesQuery, activeBannersQuery, upcomingEventsQuery } from "@/lib/queries";
+import { Notice, Banner } from "@/lib/types";
 import NoticeMarquee from "@/components/NoticeMarquee";
-import MazalTovSection from "@/components/MazalTovSection";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
@@ -19,17 +13,16 @@ import { format, parseISO } from "date-fns";
 export const revalidate = 300;
 
 async function getData() {
-  const [recent, banners, mazalTov, upcomingEvents] = await Promise.all([
+  const [recent, banners, upcomingEvents] = await Promise.all([
     client.fetch<Notice[]>(recentNoticesQuery).catch(() => []),
     client.fetch<Banner[]>(activeBannersQuery).catch(() => []),
-    client.fetch<MazalTov[]>(mazalTovQuery).catch(() => []),
     client.fetch<Notice[]>(upcomingEventsQuery).catch(() => []),
   ]);
-  return { recent, banners, mazalTov, upcomingEvents };
+  return { recent, banners, upcomingEvents };
 }
 
 export default async function HomePage() {
-  const { recent, banners, mazalTov, upcomingEvents } = await getData();
+  const { recent, banners, upcomingEvents } = await getData();
 
   const formatEventDate = (d?: string) => {
     if (!d) return "";
@@ -148,13 +141,6 @@ export default async function HomePage() {
 
         {/* Widget row below notices */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-12 items-stretch">
-
-          {/* Mazal Tov */}
-          {mazalTov.length > 0 && (
-            <div className="h-full">
-              <MazalTovSection items={mazalTov} />
-            </div>
-          )}
 
           {/* Zmanim */}
           <div className="h-full">
