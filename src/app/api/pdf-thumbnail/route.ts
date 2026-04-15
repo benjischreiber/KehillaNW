@@ -6,6 +6,7 @@ import { noticeBySlug } from "@/lib/queries";
 import { Notice } from "@/lib/types";
 
 export const runtime = "nodejs";
+export const revalidate = 2592000;
 
 export async function GET(request: NextRequest) {
   const slug = request.nextUrl.searchParams.get("slug");
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
   return new Response(new Uint8Array(png), {
     headers: {
       "Content-Type": "image/png",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      "Cache-Control": "public, s-maxage=2592000, stale-while-revalidate=31536000",
     },
   });
 }
