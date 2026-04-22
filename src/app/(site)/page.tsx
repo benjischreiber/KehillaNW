@@ -10,7 +10,7 @@ import MinyanMavenWidget from "@/components/MinyanMavenWidget";
 import { CalendarDays, ArrowRight } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 async function getData() {
   const [recent, banners, upcomingEvents] = await Promise.all([

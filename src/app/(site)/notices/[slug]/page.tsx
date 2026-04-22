@@ -10,7 +10,7 @@ import { PortableText } from "next-sanity";
 import { ExternalLink, ArrowLeft, Tag, FileText, Calendar } from "lucide-react";
 import { decodeHtmlEntities, decodePortableTextValue, formatDateTime } from "@/lib/utils";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
