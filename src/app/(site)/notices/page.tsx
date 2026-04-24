@@ -5,7 +5,7 @@ import NoticeScrollUp from "@/components/NoticeScrollUp";
 import Link from "next/link";
 import { groq } from "next-sanity";
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 interface Props {
   searchParams: Promise<{ q?: string; category?: string; events?: string }>;
