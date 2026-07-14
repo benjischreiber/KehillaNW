@@ -49,7 +49,24 @@ async function getMatchingCategories(q?: string) {
 async function getNotices(q?: string, category?: string, events?: string) {
   if (q) {
     return client.fetch<Notice[]>(
-      groq`*[_type == "notice" && !(_id in path("drafts.**")) && (title match $q || summary match $q) && (!defined(visible) || visible == true) && (!defined(endDate) || endDate > now())]
+      groq`*[
+        _type == "notice"
+        && !(_id in path("drafts.**"))
+        && (
+          title match $q
+          || summary match $q
+          || category->title match $q
+          || category->slug.current match $q
+          || secondaryCategory->title match $q
+          || secondaryCategory->slug.current match $q
+        )
+        && (!defined(visible) || visible == true)
+        && (!defined(endDate) || endDate > now())
+        && (
+          (defined(category->_id) && (!defined(category->visible) || category->visible == true))
+          || (defined(secondaryCategory->_id) && (!defined(secondaryCategory->visible) || secondaryCategory->visible == true))
+        )
+      ]
       | order(coalesce(priority, 0) desc, coalesce(publishDate, _createdAt) desc, _createdAt desc)[0..47]{
         _id, title, slug, summary, publishDate, priority, featured, isEvent, externalLink, image,
         "categoryTitle": category->title,
