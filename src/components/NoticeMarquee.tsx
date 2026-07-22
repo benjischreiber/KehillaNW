@@ -5,8 +5,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Notice } from "@/lib/types";
 import NoticeCard from "./NoticeCard";
 
-const AUTO_SCROLL_STEP = 0.9;
-const RESUME_DELAY = 1600;
+const AUTO_SCROLL_STEP = 0.35;
+const RESUME_DELAY = 3000;
 const EDGE_FADE = 28;
 
 export default function NoticeMarquee({ notices }: { notices: Notice[] }) {
