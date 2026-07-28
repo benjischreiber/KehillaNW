@@ -10,7 +10,8 @@ import MinyanMavenWidget from "@/components/MinyanMavenWidget";
 import { CalendarDays, ArrowRight } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
-export const revalidate = 300;
+// Keep Sanity-backed pages fresh without regenerating on every burst of traffic.
+export const revalidate = 900;
 
 async function getData() {
   const [recent, banners, upcomingEvents] = await Promise.all([

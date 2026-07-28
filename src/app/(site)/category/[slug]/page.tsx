@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { urlFor } from "@/sanity/lib/image";
 
-export const revalidate = 300;
+export const revalidate = 900;
 
 interface Props {
   params: Promise<{ slug: string }>;
