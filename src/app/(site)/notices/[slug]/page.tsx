@@ -34,7 +34,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? urlFor(notice.image).width(1200).height(630).fit("crop").format("jpg").quality(80).url()
     : firstContentImage
       ? urlFor(firstContentImage).width(1200).height(630).fit("crop").format("jpg").quality(80).url()
-    : `https://www.kehillanw.org/api/og-notice?slug=${encodeURIComponent(slug)}`;
+    : notice.pdfUrl
+      ? `https://www.kehillanw.org/api/pdf-thumbnail?slug=${encodeURIComponent(slug)}`
+      : `https://www.kehillanw.org/api/og-notice?slug=${encodeURIComponent(slug)}`;
 
   return {
     title,
